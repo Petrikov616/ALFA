@@ -3,7 +3,8 @@ import Hero from '../components/navbar/Hero'
 import Login from '../pages/Login'
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
-import Admin from '../pages/Admin'
+import RegistrarAdmin from '../pages/RegistrarAdmin'
+import ListadoAdmin from '../pages/ListadoAdmin'
 
 function AppRouter() {
     return (
@@ -13,7 +14,8 @@ function AppRouter() {
             </Route>
 
             <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/listadoadmin" element={<ListadoAdmin />} />
+            <Route path="/registraradmin" element={<RegistrarAdmin />} />
         </Routes>
     );
 }
