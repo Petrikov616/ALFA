@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import RegistrarAdmin from '../pages/RegistrarAdmin'
 import ListadoAdmin from '../pages/ListadoAdmin'
+import LeerQRAdmin from '../pages/LeerQRAdmin'
 
 function AppRouter() {
     return (
@@ -16,6 +17,7 @@ function AppRouter() {
             <Route path="/login" element={<Login />} />
             <Route path="/listadoadmin" element={<ListadoAdmin />} />
             <Route path="/registraradmin" element={<RegistrarAdmin />} />
+            <Route path='/leerqradmin' element={<LeerQRAdmin />} />
         </Routes>
     );
 }

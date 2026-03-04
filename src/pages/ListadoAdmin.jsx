@@ -19,9 +19,9 @@ const ListadoAdmin = () => {
                     </h2>
 
                     <nav className="menu">
+                        <button><span>Listado de Estudiantes</span></button>
                         <button><span>Registrar Estudiante</span></button>
                         <button><span>Leer QR</span></button>
-                        <button><span>Listado de Estudiantes</span></button>
                         <button><span>Gestión de permisos</span></button>
                         <button><span>Registrar líder</span></button>
                     </nav>
