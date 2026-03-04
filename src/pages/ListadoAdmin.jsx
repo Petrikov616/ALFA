@@ -1,5 +1,7 @@
 import { useState } from "react";
 import "./ListadoAdmin.css";
+import { Link } from "react-router-dom";
+
 
 const ListadoAdmin = () => {
     const [menuOpen, setMenuOpen] = useState(true);
@@ -19,11 +21,26 @@ const ListadoAdmin = () => {
                     </h2>
 
                     <nav className="menu">
-                        <button><span>Listado de Estudiantes</span></button>
-                        <button><span>Registrar Estudiante</span></button>
-                        <button><span>Leer QR</span></button>
-                        <button><span>Gestión de permisos</span></button>
-                        <button><span>Registrar líder</span></button>
+
+                        <Link to="/listadoadmin" className="menu-link">
+                        <span>Listado de Estudiantes</span>
+                        </Link>
+
+                        <Link to="/registraradmin" className="menu-link">
+                        <span>Registrar Estudiante</span>
+                        </Link>
+
+                        <Link to="/leerqradmin" className="menu-link">
+                        <span>Leer QR</span>
+                        </Link>
+
+                        <Link to="/permisosadmin" className="menu-link">
+                        <span>Gestión de permisos</span>
+                        </Link>
+
+                        <Link to="/lideradmin" className="menu-link">
+                        <span>Registrar líder</span>
+                        </Link>
                     </nav>
 
                     <div className="logout">

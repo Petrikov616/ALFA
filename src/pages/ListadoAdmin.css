@@ -44,8 +44,8 @@
 .menu {
     flex: 1;
 }
-
 .menu button,
+.menu a,
 .logout button {
     width: 100%;
     padding: 10px;
@@ -53,12 +53,24 @@
     background-color: #3b8ec2;
     border: none;
     color: white;
-    font-weight: 800;
+    font-weight: 700;
     cursor: pointer;
     border-radius: 5px;
     text-align: left;
     white-space: nowrap;
+    display: block;
+    text-decoration: none;
+    font-size: 15px;
+    transition: background-color 0.3s;
 }
+.menu button:hover,
+.menu a:hover,
+.logout button:hover {
+    background-color: rgb(31, 28, 28);
+
+
+}
+
 
 .main-content {
     flex: 1;

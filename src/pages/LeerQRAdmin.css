@@ -5,6 +5,8 @@
     margin-top: 20px;
     gap: 40px;
     padding: 20px;
+    justify-content: center;
+    width: 900px;
 }
 .subtitle{
     font-family: Arial, Helvetica, sans-serif;
@@ -52,5 +54,10 @@
     border-radius: 6px;
     padding: 8px 10px;
     cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
 }
-/*FALTA
+.input-group button:hover {
+    background-color: #222121;
+    color: white;
+
+}
