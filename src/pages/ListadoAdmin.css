@@ -90,7 +90,7 @@
     display: flex;
     align-items: center;
     gap: 40px;
-    margin-top: 20px;
+    margin-top: 1px;
 }
 
 .filter-group {
@@ -133,4 +133,63 @@
     border-radius: 6px;
     cursor: pointer;
     margin-left: auto;
+}
+/* espacio interno de la caja */
+.content-box{
+    padding: 20px;
+}
+
+
+/* dropdown */
+.dropdown{
+    position: relative;
+}
+
+
+/* menú del dropdown */
+.dropdown-menu{
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    min-width: 120px;
+    z-index: 10;
+}
+
+
+/* items dropdown */
+.dropdown-item{
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+
+/* hover dropdown */
+.dropdown-item:hover{
+    background-color: #e6f2fa;
+}
+
+
+/* mejora botones select */
+.select-btn{
+    font-weight: 600;
+    transition: background 0.2s;
+    
+}
+
+.select-btn:hover{
+    background-color: #2f79a8;
+}
+
+
+/* mejora botón excel */
+.excel-btn{
+    transition: transform 0.2s;
+}
+
+.excel-btn:hover{
+    transform: scale(1.05);
 }

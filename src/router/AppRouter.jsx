@@ -6,6 +6,7 @@ import MainLayout from '../layouts/MainLayout'
 import RegistrarAdmin from '../pages/RegistrarAdmin'
 import ListadoAdmin from '../pages/ListadoAdmin'
 import LeerQRAdmin from '../pages/LeerQRAdmin'
+import PermisosAdmin from '../pages/PermisosAdmin'
 
 function AppRouter() {
     return (
@@ -15,9 +16,10 @@ function AppRouter() {
             </Route>
 
             <Route path="/login" element={<Login />} />
-            <Route path="/listadoadmin" element={<ListadoAdmin />} />
-            <Route path="/registraradmin" element={<RegistrarAdmin />} />
-            <Route path='/leerqradmin' element={<LeerQRAdmin />} />
+            <Route path="/admin/listado" element={<ListadoAdmin />} />
+            <Route path="/admin/registrar" element={<RegistrarAdmin />} />
+            <Route path='/admin/leerqr' element={<LeerQRAdmin />} />
+            <Route path='/admin/permisos' element={<PermisosAdmin />} />
         </Routes>
     );
 }
