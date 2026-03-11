@@ -79,7 +79,9 @@ const ListadoAdmin = () => {
                     </nav>
 
                     <div className="logout">
-                        <button><span>Cerrar Sesión</span></button>
+                        <Link to="/login" className="menu-link">
+                        <span>Cerrar secion</span>
+                        </Link>
                     </div>
 
                 </div>
