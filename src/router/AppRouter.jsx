@@ -3,11 +3,11 @@ import Hero from '../components/navbar/Hero'
 import Login from '../pages/Login'
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
-import RegistrarAdmin from '../pages/RegistrarAdmin'
-import ListadoAdmin from '../pages/ListadoAdmin'
-import LeerQRAdmin from '../pages/LeerQRAdmin'
-import PermisosAdmin from '../pages/PermisosAdmin'
-import RegistrarLider from '../pages/RegistrarLider'
+import RegistrarAdmin from '../pages/admin/RegistrarAdmin'
+import ListadoAdmin from '../pages/admin/ListadoAdmin'
+import LeerQRAdmin from '../pages/admin/LeerQRAdmin'
+import PermisosAdmin from '../pages/admin/PermisosAdmin'
+import RegistrarLider from '../pages/admin/RegistrarLider'
 
 function AppRouter() {
     return (
@@ -22,6 +22,7 @@ function AppRouter() {
             <Route path='/admin/leerqr' element={<LeerQRAdmin />} />
             <Route path='/admin/permisos' element={<PermisosAdmin />} />
             <Route path='/admin/lider' element={<RegistrarLider />} />
+
         </Routes>
     );
 }
