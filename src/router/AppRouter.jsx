@@ -7,6 +7,7 @@ import RegistrarAdmin from '../pages/RegistrarAdmin'
 import ListadoAdmin from '../pages/ListadoAdmin'
 import LeerQRAdmin from '../pages/LeerQRAdmin'
 import PermisosAdmin from '../pages/PermisosAdmin'
+import RegistrarLider from '../pages/RegistrarLider'
 
 function AppRouter() {
     return (
@@ -20,6 +21,7 @@ function AppRouter() {
             <Route path="/admin/registrar" element={<RegistrarAdmin />} />
             <Route path='/admin/leerqr' element={<LeerQRAdmin />} />
             <Route path='/admin/permisos' element={<PermisosAdmin />} />
+            <Route path='/admin/lider' element={<RegistrarLider />} />
         </Routes>
     );
 }
