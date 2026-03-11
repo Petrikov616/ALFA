@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./RegistrarAdmin.css";
+import { Link } from "react-router-dom";
 
 const RegistrarAdmin = () => {
     const [menuOpen, setMenuOpen] = useState(true);

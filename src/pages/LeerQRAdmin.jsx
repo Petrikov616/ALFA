@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./LeerQRAdmin.css";
+import { Link } from "react-router-dom";
 
 const LeerQRAdmin = () => {
     const [menuOpen, setMenuOpen] = useState(true);
@@ -19,11 +20,26 @@ const LeerQRAdmin = () => {
                     </h2>
 
                     <nav className="menu">
-                        <button><span>Listado de Estudiantes</span></button>
-                        <button><span>Registrar Estudiante</span></button>
-                        <button><span>Leer QR</span></button>
-                        <button><span>Gestión de permisos</span></button>
-                        <button><span>Registrar líder</span></button>
+
+                        <Link to="/admin/listado" className="menu-link">
+                        <span>Listado de Estudiantes</span>
+                        </Link>
+
+                        <Link to="/admin/registrar" className="menu-link">
+                        <span>Registrar Estudiante</span>
+                        </Link>
+
+                        <Link to="/admin/leerqr" className="menu-link">
+                        <span>Leer QR</span>
+                        </Link>
+
+                        <Link to="/admin/permisos" className="menu-link">
+                        <span>Gestión de permisos</span>
+                        </Link>
+
+                        <Link to="/admin/lider" className="menu-link">
+                        <span>Registrar líder</span>
+                        </Link>
                     </nav>
 
                     <div className="logout">
