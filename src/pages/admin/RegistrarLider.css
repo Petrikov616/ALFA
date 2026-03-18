@@ -1,7 +1,7 @@
 .container-lider {
     margin: 50px auto;
     display: flex;
-    background: linear-gradient(135deg, #1a5f8a, #1f78b4);
+    background: #0D4C73;
     padding: 50px 60px;
     border-radius: 20px;
     width: 500px;
@@ -27,7 +27,7 @@
 }
 
 .input-lider input {
-    background-color: #2e8fc4;
+    background-color: #51a4d1;
     border: none;
     border-radius: 8px;
     padding: 14px 20px;
@@ -38,6 +38,7 @@
     outline: none;
     width: 100%;
     box-sizing: border-box;
+    transition: background-color 0.3s ease;
 }
 
 .input-lider input::placeholder {
@@ -46,11 +47,11 @@
 }
 
 .input-lider input:focus {
-    background-color: #3a9fd4;
+    background-color: #87a2b1;
 }
 
 .lider-btn {
-    background-color: #1a4a6e;
+    background-color: #4085b9;
     color: white;
     border: none;
     border-radius: 8px;
@@ -62,6 +63,7 @@
     cursor: pointer;
     margin-top: 5px;
     width: 100%;
+    transition: background-color 0.3s ease;
 }
 
 .lider-btn:hover {

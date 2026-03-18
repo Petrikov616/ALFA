@@ -15,39 +15,59 @@
 }
 
 .sidebar.closed {
-    width: 70px;
+    width: 85px;
 }
 
 .sidebar-content {
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+
+.sidebar.open .sidebar-content {
     padding: 20px 10px;
 }
 
+.sidebar.closed .sidebar-content {
+    padding: 20px 5px;
+}
+
+/* ── Logo ── */
 .logo {
     cursor: pointer;
     margin-bottom: 30px;
+    margin-top: 0;
     font-weight: 800;
-    font-size: 20px;
+    font-size: 30px;
     white-space: nowrap;
-    border: none;        /* ← agrega esto */
-    padding: 0;          /* ← agrega esto */
-    margin-top: 0;       /* ← agrega esto */
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+}
+
+.sidebar.open .logo {
+    justify-content: flex-start;
+    padding-left: 10px;
+}
+
+.sidebar.closed .logo {
+    justify-content: center;
+    padding: 0;
+    margin-left: 1px;
 }
 
 .sidebar.closed .logo span {
     display: none;
 }
 
-.sidebar.closed button span {
-    display: none;
-}
-
+/* ── Menu links ── */
 .menu {
     flex: 1;
 }
-.menu button,
+
 .menu a,
 .logout a {
     width: 100%;
@@ -59,18 +79,43 @@
     font-weight: 700;
     cursor: pointer;
     border-radius: 5px;
-    text-align: left;
     white-space: nowrap;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-start;
     text-decoration: none;
     font-size: 15px;
     transition: background-color 0.3s;
+    box-sizing: border-box;
 }
-.menu button:hover,
+.menu-link.active {
+    background-color: #000000;
+    border-left: 4px solid white; 
+    transform: border-left 0.3s;
+}
+
+
+.sidebar.closed .menu a,
+.sidebar.closed .logout a {
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.sidebar.closed .menu-label {
+    display: none;
+}
+
+.sidebar.closed .logout .menu-label {
+    display: none;
+}
+
 .menu a:hover,
-.logout button:hover {
+.logout a:hover {
     background-color: rgb(31, 28, 28);
 }
+
+/* ── Main content ── */
 .main-content {
     flex: 1;
     padding: 30px;
@@ -78,13 +123,21 @@
     transition: all 0.3s ease;
 }
 
+.titulo-p {
+    color: #0D4C73;
+    font-weight: 800;
+}
+
+/* ── Content box ── */
 .content-box {
-    background-color: white;
+    background-color: #0D4C73;
     height: 400px;
     border-radius: 10px;
     margin-top: 20px;
+    padding: 20px;
 }
 
+/* ── Filters ── */
 .filters {
     display: flex;
     align-items: center;
@@ -92,61 +145,12 @@
     margin-top: 1px;
 }
 
-.filter-group {
-    display: flex;
-    align-items: center;
-    margin: 20px;
-    gap: 10px;
-}
-
-.select-btn {
-    background-color: #3b8ec2;
-    border-radius: 6px;
-    color: white;
-    border: none;
-    padding: 6px 14px;
-    cursor: pointer;
-}
-
-.month-selector {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.month-selector button {
-    background-color: #1f5f89;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.excel-btn {
-    background-color: black;
-    color: white;
-    margin: 20px;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-left: auto;
-}
-/* espacio interno de la caja */
-.content-box{
-    padding: 20px;
-}
-
-
-/* dropdown */
-.dropdown{
+/* ── Dropdown ── */
+.dropdown {
     position: relative;
 }
 
-
-/* menú del dropdown */
-.dropdown-menu{
+.dropdown-menu {
     position: absolute;
     top: 40px;
     left: 0;
@@ -157,38 +161,43 @@
     z-index: 10;
 }
 
-
-/* items dropdown */
-.dropdown-item{
+.dropdown-item {
     padding: 10px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background-color 0.2s;
 }
 
-
-/* hover dropdown */
-.dropdown-item:hover{
+.dropdown-item:hover {
     background-color: #e6f2fa;
 }
 
-
-/* mejora botones select */
-.select-btn{
+/* ── Buttons ── */
+.select-btn {
+    background-color: #3b8ec2;
+    border-radius: 6px;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    cursor: pointer;
     font-weight: 600;
-    transition: background 0.2s;
-    
+    transition: background-color 0.2s;
 }
 
-.select-btn:hover{
+.select-btn:hover {
     background-color: #2f79a8;
 }
 
-
-/* mejora botón excel */
-.excel-btn{
+.excel-btn {
+    background-color: black;
+    color: white;
+    margin-left: auto;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
     transition: transform 0.2s;
 }
 
-.excel-btn:hover{
+.excel-btn:hover {
     transform: scale(1.05);
 }

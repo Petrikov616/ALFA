@@ -1,32 +1,27 @@
 .qr-container {
-    background-color: white;
+    background-color: #0D4C73;
     display: flex;
     border-radius: 10px;    
     margin-top: 30px;
     gap: 100px;
     padding: 20px;
     justify-content: center;
-    width: 100%;
+    width: 70%;
     height: 500px;
     margin-left: auto;
     margin-right: auto;
 }
-.subtitle{
-    font-family: Arial, Helvetica, sans-serif;
-    margin-top: 15px;
-    font-weight: 700;
-}
 .qr-card{
-    background-color: #3b8ec2;
+    background-color: white;
     height: 400px;
-    border-radius: 6px;
+    border-radius: 8px;
     gap: 25px;
     display: flex;
     margin-top: 20px;
     flex-direction: column;
     padding: 25px;
     width: 400px;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 .qr-card p{
     font-family: Arial, Helvetica, sans-serif;
@@ -37,7 +32,7 @@
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 700;
     margin-top: 5px;
-    background-color: #eaeaea;
+    background-color: #0D4C73;
     padding: 25px;
     border-radius: 15px;
 }
