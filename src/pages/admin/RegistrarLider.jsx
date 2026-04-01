@@ -1,15 +1,60 @@
 import { useState } from "react";
 import "./RegistrarLider.css";
 import { NavLink } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const RegistrarLider = () => {
     const [menuOpen, setMenuOpen] = useState(true)
+    const [formData, setFormData] = useState({
+        lider: "",
+        document: "",
+        contraseña: "",
+    })
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen)
     };
 
     const linkClass = ({ isActive }) => isActive ? "menu-link active" : "menu-link";
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.id]: e.target.value })
+    }
+
+    const handleSubmit = async () => {
+        if (!formData.lider || !formData.document || !formData.contraseña) {
+            Swal.fire({
+                title: "Campos incompletos", 
+                text: "Por favor completa todos los campos",
+                icon: "warning",
+                confirmButtonText: "Entendido",
+                confirmButtonColor: "#1a7fa8",
+            })
+            return
+        }
+
+        try {
+
+            Swal.fire({
+                title: "¡Registro exitoso!",
+                text: "El líder se registró correctamente",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#1a7fa8",
+            })
+
+            // Limpiar formulario
+            setFormData({ lider: "", document: "", contraseña: "" })
+
+        } catch (error) {
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo registrar el líder",
+                icon: "error",
+                confirmButtonColor: "#1a7fa8",
+            })
+        }
+    }
 
     return (
         <div className="admin-layout">
@@ -75,33 +120,45 @@ const RegistrarLider = () => {
                 </div>
             </aside>
 
-            {/* CONTENIDO */}
             <main className={`main-content ${menuOpen ? "expanded" : "collapsed"}`}>
                 <h1 className="titulo-p">Registro de Lideres</h1>
-
-                <p className="text-p">
-                    Registro de lideres para el plan de alimentación escolar
-                </p>
+                <p className="text-p">Registro de lideres para el plan de alimentación escolar</p>
 
                 <div className="container-lider">
                     <div className="form-lider">
 
                         <div className="input-lider">
                             <label htmlFor="lider">Lider</label>
-                            <input type="text" placeholder="Lider" id="lider" />
+                            {/* ✅ Corregido: value y onChange */}
+                            <input type="text" placeholder="Lider" id="lider"
+                                value={formData.lider}
+                                onChange={handleChange}
+                            />
                         </div>
 
                         <div className="input-lider">
-                            <label htmlFor="documento">Documento</label>
-                            <input type="text" placeholder="Documento" id="documento" />
+                            <label htmlFor="document">Documento</label>
+                            {/* ✅ Corregido: value y onChange */}
+                            <input type="text" placeholder="Documento" id="document"
+                                value={formData.document}
+                                onChange={handleChange}
+                            />
                         </div>
 
                         <div className="input-lider">
                             <label htmlFor="contraseña">Contraseña</label>
-                            <input type="password" placeholder="Contraseña" id="contraseña" />
+                            {/* ✅ Corregido: value y onChange */}
+                            <input type="password" placeholder="Contraseña" id="contraseña"
+                                value={formData.contraseña}
+                                onChange={handleChange}
+                            />
                         </div>
 
-                        <button type="submit" className="lider-btn">Crear lider</button>
+                        {/* ✅ Corregido: type="button" y onClick */}
+                        <button type="button" className="lider-btn" onClick={handleSubmit}>
+                            Crear lider
+                        </button>
+
                     </div>
                 </div>
             </main>
