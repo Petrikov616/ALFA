@@ -5,44 +5,79 @@ import { NavLink } from "react-router-dom";
 const ListadoAdmin = () => {
 
     const [menuOpen, setMenuOpen] = useState(true);
+    const toggleMenu = () => setMenuOpen(!menuOpen);
 
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
-    };
-
-    // DROPDOWN GRUPO
-    const [openGrupo, setOpenGrupo] = useState(false);
+    // -------------------------
+    // FILTROS
+    // -------------------------
+    const [busqueda, setBusqueda] = useState("");
     const [grupo, setGrupo] = useState("Todos");
-
-    const grupos = [
-        "Todos",
-        "6-1", "6-2",
-        "7-1", "7-2",
-        "8-1", "8-2",
-        "9-1", "9-2",
-        "10-1", "10-2",
-        "11-1", "11-2"
-    ];
-
-    // DROPDOWN MES
-    const [openMes, setOpenMes] = useState(false);
     const [mes, setMes] = useState("Enero");
 
+    const grupos = ["Todos", "6-1", "6-2", "7-1", "7-2", "8-1", "8-2", "9-1", "9-2", "10-1", "10-2", "11-1", "11-2"];
+
     const meses = [
-        "Enero",
-        "Febrero",
-        "Marzo",
-        "Abril",
-        "Mayo",
-        "Junio",
-        "Julio",
-        "Agosto",
-        "Septiembre",
-        "Octubre",
-        "Noviembre",
-        "Diciembre",
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
-    const linkClass = ({ isActive }) => isActive ? "menu-link active" : "menu-link";
+
+    // -------------------------
+    // DATOS MOCK
+    // -------------------------
+    const [estudiantes, setEstudiantes] = useState([
+        { id: 1, estudiante: "Simon", grupo: "9-2" },
+        { id: 2, estudiante: "Samuel", grupo: "9-2" },
+        { id: 3, estudiante: "Victor", grupo: "9-2" },
+        { id: 4, estudiante: "Salo", grupo: "9-2" },
+    ]);
+
+    // -------------------------
+    // FUNCIÓN DÍAS DEL MES
+    // -------------------------
+    const obtenerDiasDelMes = (mes) => {
+        const mesesIndex = {
+            Enero: 0, Febrero: 1, Marzo: 2, Abril: 3,
+            Mayo: 4, Junio: 5, Julio: 6, Agosto: 7,
+            Septiembre: 8, Octubre: 9, Noviembre: 10, Diciembre: 11,
+        };
+
+        const year = new Date().getFullYear();
+        const mesIndex = mesesIndex[mes];
+        const diasEnMes = new Date(year, mesIndex + 1, 0).getDate();
+        const dias = [];
+
+        for (let i = 1; i <= diasEnMes; i++) {
+            const fecha = new Date(year, mesIndex, i);
+            const nombreDia = fecha.toLocaleDateString("es-ES", { weekday: "short" });
+
+            dias.push({
+                numero: i,
+                nombre: nombreDia
+            });
+        }
+        return dias;
+    };
+
+    const dias = obtenerDiasDelMes(mes);
+
+    // -------------------------
+    // FILTRO
+    // -------------------------
+    const estudiantesFiltrados = estudiantes.filter((e) => {
+        const coincideNombre = e.estudiante.toLowerCase().includes(busqueda.toLowerCase());
+        const coincideGrupo = grupo === "Todos" || e.grupo === grupo;
+        return coincideNombre && coincideGrupo;
+    });
+
+    // -------------------------
+    // ACCIONES
+    // -------------------------
+    const eliminarEstudiante = (id) => {
+        setEstudiantes(estudiantes.filter(e => e.id !== id));
+    };
+
+    const linkClass = ({ isActive }) =>
+        isActive ? "menu-link active" : "menu-link";
 
     return (
         <div className="admin-layout">
@@ -59,7 +94,6 @@ const ListadoAdmin = () => {
                     </div>
 
                     <nav className="menu">
-
                         <NavLink to="/admin/listado" className={linkClass}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M16 2v2" /><path d="M17.915 22a6 6 0 0 0-12 0" /><path d="M8 2v2" /><circle cx="12" cy="12" r="4" /><rect x="3" y="4" width="18" height="18" rx="2" />
@@ -85,7 +119,7 @@ const ListadoAdmin = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M12 17h.01" /><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
                             </svg>
-                            <span className="menu-label">Gestión de permisos</span>
+                            <span className="menu-label">Reportes</span>
                         </NavLink>
 
                         <NavLink to="/admin/lider" className={linkClass}>
@@ -94,7 +128,6 @@ const ListadoAdmin = () => {
                             </svg>
                             <span className="menu-label">Registrar líder</span>
                         </NavLink>
-
                     </nav>
 
                     <div className="logout">
@@ -105,90 +138,83 @@ const ListadoAdmin = () => {
                             <span className="menu-label">Cerrar sesión</span>
                         </NavLink>
                     </div>
-
                 </div>
             </aside>
 
-
             {/* CONTENIDO */}
             <main className={`main-content ${menuOpen ? "expanded" : "collapsed"}`}>
+
                 <h1 className="titulo-p">Bienvenido, Administrador</h1>
 
-                <div className="content-box">
-                    <div className="filters">
-
-                        {/* DROPDOWN GRUPO */}
-                        <div className="dropdown">
-
-                            <button
-                                className="select-btn"
-                                onClick={() => setOpenGrupo(!openGrupo)}
-                            >
-                                {grupo} ▾
-                            </button>
-
-                            {openGrupo && (
-                                <div className="dropdown-menu">
-                                    {grupos.map((g, index) => (
-                                        <div
-                                            key={index}
-                                            className="dropdown-item"
-                                            onClick={() => {
-                                                setGrupo(g);
-                                                setOpenGrupo(false);
-                                            }}
-                                        >
-                                            {g}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                        </div>
-
-
-                        {/* DROPDOWN MES */}
-                        <div className="dropdown">
-
-                            <button
-                                className="select-btn"
-                                onClick={() => setOpenMes(!openMes)}
-                            >
-                                {mes} ▾
-                            </button>
-
-                            {openMes && (
-                                <div className="dropdown-menu">
-                                    {meses.map((e, index) => (
-                                        <div
-                                            key={index}
-                                            className="dropdown-item"
-                                            onClick={() => {
-                                                setMes(e);
-                                                setOpenMes(false);
-                                            }}
-                                        >
-                                            {e}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                        </div>
-
-
-                        {/* BOTÓN EXPORTAR */}
-                        <button className="excel-btn">
-                            Exportar a Excel
-                        </button>
-
-                    </div>
+                {/* FILTROS */}
+                <div className="filters">
+                    <input
+                        type="text"
+                        placeholder="Buscar estudiante..."
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                    />
+                    <select value={grupo} onChange={(e) => setGrupo(e.target.value)}>
+                        {grupos.map(g => <option key={g}>{g}</option>)}
+                    </select>
+                    <select value={mes} onChange={(e) => setMes(e.target.value)}>
+                        {meses.map(m => <option key={m}>{m}</option>)}
+                    </select>
                 </div>
 
-            </main>
+                {/* TABLA */}
+                <div className="tabla">
 
+                    {/* HEADER */}
+                    <div className="tabla-header">
+                        <span className="col-estudiante">Estudiante</span>
+                        <span className="col-grupo">Grupo</span>
+
+                        {dias.map((d, i) => (
+                            <span key={i}>
+                                {String(d.numero).padStart(2, "0")} {d.nombre}
+                            </span>
+                        ))}
+
+                        <span style={{ width: '120px' }}>Editar</span>
+                        <span style={{ width: '120px' }}>Eliminar</span>
+                    </div>
+
+                    {/* FILAS */}
+                    {estudiantesFiltrados.map((est) => (
+                        <div key={est.id} className="fila">
+
+                            {/* NOMBRE (FIJO) */}
+                            <span className="col-estudiante">{est.estudiante}</span>
+
+                            {/* GRUPO (FIJO) */}
+                            <span className="col-grupo">{est.grupo}</span>
+
+                            {/* DÍAS (SCROLLABLE) */}
+                            {dias.map((_, i) => (
+                                <span key={i}>
+                                    {Math.random() > 0.5
+                                        ? <span className="check">✔</span>
+                                        : <span className="cross">✖</span>}
+                                </span>
+                            ))}
+
+                            {/* ACCIONES */}
+                            <div className="acciones">
+                                <button className="btn-icon">✏️</button>
+                                <button
+                                    className="btn-icon"
+                                    onClick={() => eliminarEstudiante(est.id)}
+                                >
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </main>
         </div>
     );
 };
 
-export default ListadoAdmin;
+export default ListadoAdmin;    

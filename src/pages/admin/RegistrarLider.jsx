@@ -96,7 +96,7 @@ const RegistrarLider = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M12 17h.01" /><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
                             </svg>
-                            <span className="menu-label">Gestión de permisos</span>
+                            <span className="menu-label">Reportes</span>
                         </NavLink>
 
                         <NavLink to="/admin/lider" className={linkClass}>
@@ -129,32 +129,26 @@ const RegistrarLider = () => {
 
                         <div className="input-lider">
                             <label htmlFor="lider">Lider</label>
-                            {/* ✅ Corregido: value y onChange */}
+
                             <input type="text" placeholder="Lider" id="lider"
                                 value={formData.lider}
                                 onChange={handleChange}
                             />
                         </div>
-
                         <div className="input-lider">
                             <label htmlFor="document">Documento</label>
-                            {/* ✅ Corregido: value y onChange */}
                             <input type="text" placeholder="Documento" id="document"
                                 value={formData.document}
                                 onChange={handleChange}
                             />
                         </div>
-
                         <div className="input-lider">
                             <label htmlFor="contraseña">Contraseña</label>
-                            {/* ✅ Corregido: value y onChange */}
                             <input type="password" placeholder="Contraseña" id="contraseña"
                                 value={formData.contraseña}
                                 onChange={handleChange}
                             />
                         </div>
-
-                        {/* ✅ Corregido: type="button" y onClick */}
                         <button type="button" className="lider-btn" onClick={handleSubmit}>
                             Crear lider
                         </button>
