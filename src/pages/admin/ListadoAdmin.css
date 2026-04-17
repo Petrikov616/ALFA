@@ -274,10 +274,9 @@
 .fila button {
     background: none;
     border: none;
-    gap: 50px;
     cursor: pointer;
     font-size: 16px;
-    padding: 20px;
+    padding: 9px;
     border-radius: 4px;
     transition: background-color 0.2s;
 }
@@ -285,9 +284,6 @@
 .fila button:hover {
     background-color: #e5e7eb;
 }
-
-
-
 
 /* BOTONES EXTRA */
 .select-btn {

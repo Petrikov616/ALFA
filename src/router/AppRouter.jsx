@@ -8,6 +8,7 @@ import ListadoAdmin from '../pages/admin/ListadoAdmin'
 import LeerQRAdmin from '../pages/admin/LeerQRAdmin'
 import ReportesAdmin from '../pages/admin/ReportesAdmin'
 import RegistrarLider from '../pages/admin/RegistrarLider'
+import NotificacionAdmin from '../pages/admin/NotificacionAdmin'
 
 function AppRouter() {
     return (
@@ -22,6 +23,7 @@ function AppRouter() {
             <Route path='/admin/leerqr' element={<LeerQRAdmin />} />
             <Route path='/admin/permisos' element={<ReportesAdmin />} />
             <Route path='/admin/lider' element={<RegistrarLider />} />
+            <Route path='/admin/notificaciones' element={<NotificacionAdmin />} />
 
         </Routes>
     );

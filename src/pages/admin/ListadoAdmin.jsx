@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./ListadoAdmin.css";
 import { NavLink } from "react-router-dom";
+import { Pencil, Trash2, Check, X } from "lucide-react";
 
 const ListadoAdmin = () => {
 
@@ -25,10 +26,10 @@ const ListadoAdmin = () => {
     // DATOS MOCK
     // -------------------------
     const [estudiantes, setEstudiantes] = useState([
-        { id: 1, estudiante: "Simon", grupo: "9-2" },
-        { id: 2, estudiante: "Samuel", grupo: "9-2" },
-        { id: 3, estudiante: "Victor", grupo: "9-2" },
-        { id: 4, estudiante: "Salo", grupo: "9-2" },
+        { id: 1, estudiante: "Simon Tobon Correa", grupo: "6-1" },
+        { id: 2, estudiante: "Samuel Zuleta Hincapie", grupo: "11-2" },
+        { id: 3, estudiante: "Victor Manuel Perez", grupo: "8-2" },
+        { id: 4, estudiante: "Salo NO SE XD", grupo: "11-1" },
     ]);
 
     // -------------------------
@@ -176,8 +177,8 @@ const ListadoAdmin = () => {
                             </span>
                         ))}
 
-                        <span style={{ width: '120px' }}>Editar</span>
-                        <span style={{ width: '120px' }}>Eliminar</span>
+                        <span style={{ width: '80px', textAlign: 'center' }}>Editar</span>
+                        <span style={{ width: '80px', textAlign: 'center' }}>Eliminar</span>
                     </div>
 
                     {/* FILAS */}
@@ -194,20 +195,23 @@ const ListadoAdmin = () => {
                             {dias.map((_, i) => (
                                 <span key={i}>
                                     {Math.random() > 0.5
-                                        ? <span className="check">✔</span>
-                                        : <span className="cross">✖</span>}
+                                        ? <span><Check size={20} color="green" /></span>
+                                        : <span><X size={20} color="red" /></span>}
                                 </span>
                             ))}
 
                             {/* ACCIONES */}
-                            <div className="acciones">
-                                <button className="btn-icon">✏️</button>
-                                <button
-                                    className="btn-icon"
-                                    onClick={() => eliminarEstudiante(est.id)}
-                                >
-                                    🗑️
-                                </button>
+                            <div style={{ display: 'flex', width: '160px', flexShrink: 0 }}>
+                                <span className="col-acciones">
+
+                                    <button className="btn-icon"><Pencil size={16} /></button>
+
+                                </span>
+                                <span className="col-acciones">
+
+                                    <button className="btn-icon" onClick={() => eliminarEstudiante(est.id)}><Trash2 size={16} /></button>
+
+                                </span>
                             </div>
                         </div>
                     ))}
