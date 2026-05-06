@@ -1,62 +1,161 @@
-.qr-container {
-    background-color: #0D4C73;
+/* Reutilizamos la estructura base para mantener consistencia */
+.admin-layout {
     display: flex;
-    border-radius: 10px;    
-    margin-top: 30px;
-    gap: 100px;
-    padding: 20px;
-    justify-content: center;
-    width: 70%;
-    height: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    height: 100vh;
+    background-color: #f4f7f9;
+    overflow: hidden;
 }
-.qr-card{
-    background-color: white;
-    height: 400px;
-    border-radius: 8px;
-    gap: 25px;
-    display: flex;
-    margin-top: 20px;
-    flex-direction: column;
-    padding: 25px;
-    width: 400px;
-    color: rgb(0, 0, 0);
-}
-.qr-card p{
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-}
-.manual-box{
-    color: black;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 700;
-    margin-top: 5px;
-    background-color: #0D4C73;
-    padding: 25px;
-    border-radius: 15px;
-}
-.input-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-.input-group input {
-    flex: 1;
-    border: none;
-    padding: 7px;
-    border-radius: 6px;
-}
-.input-group button {
-    background-color: #3b8ec2;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 10px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-}
-.input-group button:hover {
-    background-color: #222121;
-    color: white;
 
+/* --- CONTENEDOR PRINCIPAL --- */
+.main-content {
+    flex: 1;
+    padding: 40px 60px;
+    overflow-y: auto;
+}
+
+.main-blue-container {
+    background-color: #2b4b66;
+    border-radius: 15px;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* --- TARJETAS --- */
+.white-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.card-title-b {
+    color: black;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0 0 8px 0;
+}
+
+.card-desc-b {
+    color: #333;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+    line-height: 1.4;
+}
+
+/* --- SECCIÓN HUELLA --- */
+.fingerprint-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 15px;
+}
+
+.fingerprint-box {
+    width: 140px;
+    height: 140px;
+    border: 3px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fafafa;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.fingerprint-box.scanning {
+    border-color: #5dade2;
+}
+
+.status-text {
+    font-weight: 600;
+    color: #666;
+    margin: 0;
+}
+
+/* Animación de escaneo */
+.scan-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #5dade2;
+    top: 0;
+    box-shadow: 0 0 8px #5dade2;
+    animation: scanning 2s infinite ease-in-out;
+}
+
+@keyframes scanning {
+    0% { top: 0; }
+    50% { top: 100%; }
+    100% { top: 0; }
+}
+
+/* --- REGISTRO MANUAL --- */
+.inner-dark-box {
+    background-color: #2b4b66; 
+    border-radius: 15px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: auto;
+}
+
+.form-label { color: white; font-weight: bold; margin-bottom: 5px; }
+
+.manual-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    color: #999;
+}
+
+.manual-input-wrapper .input-white {
+    padding-left: 45px;
+}
+
+.btn-confirmar {
+    background-color: #5b8fbc;
+    color: black;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-confirmar:hover:not(:disabled) {
+    background-color: #4a7aa6;
+}
+
+.btn-confirmar:disabled {
+    background-color: #4a6b82;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: not-allowed;
+}
+
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 850px) {
+    .main-blue-container {
+        flex-direction: column;
+    }
+    .white-card { width: 100%; }
 }
