@@ -17,6 +17,7 @@ function AppRouter() {
                 <Route path="/" element={<Hero />} />
             </Route>
 
+            {/* RUTAS DE ADMINISTRADOR */}
             <Route path="/login" element={<Login />} />
             <Route path="/admin/listado" element={<ListadoAdmin />} />
             <Route path="/admin/registrar" element={<RegistrarAdmin />} />
@@ -24,6 +25,14 @@ function AppRouter() {
             <Route path='/admin/permisos' element={<ReportesAdmin />} />
             <Route path='/admin/lider' element={<RegistrarLider />} />
             <Route path='/admin/notificaciones' element={<NotificacionAdmin />} />
+
+            {/* RUTAS DE LIDER */}
+            <Route path="/lider/listado" element={<ListadoAdmin />} />
+            <Route path="/lider/registrar" element={<RegistrarAdmin />} />
+            <Route path='/lider/leerqr' element={<LeerQRAdmin />} />
+            <Route path='/lider/permisos' element={<ReportesAdmin />} />
+            <Route path='/lider/notificaciones' element={<NotificacionAdmin />} />
+
 
         </Routes>
     );

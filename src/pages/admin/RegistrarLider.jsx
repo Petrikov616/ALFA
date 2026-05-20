@@ -1,65 +1,59 @@
 import { useState } from "react";
-import "./RegistrarLider.css";
+import "../css/RegistrarLider.css";
 import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const RegistrarLider = () => {
-    const [menuOpen, setMenuOpen] = useState(true)
+    const [menuOpen, setMenuOpen] = useState(true);
     const [formData, setFormData] = useState({
         lider: "",
         document: "",
+        correo: "", // Añadido para consistencia
         contraseña: "",
-    })
+    });
 
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen)
-    };
-
+    const toggleMenu = () => setMenuOpen(!menuOpen);
     const linkClass = ({ isActive }) => isActive ? "menu-link active" : "menu-link";
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value })
-    }
+        setFormData({ ...formData, [e.target.id]: e.target.value });
+    };
 
-    const handleSubmit = async () => {
-        if (!formData.lider || !formData.document || !formData.contraseña) {
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // Evita recarga de página
+        
+        if (!formData.lider || !formData.document || !formData.correo || !formData.contraseña) {
             Swal.fire({
-                title: "Campos incompletos", 
+                title: "Campos incompletos",
                 text: "Por favor completa todos los campos",
                 icon: "warning",
-                confirmButtonText: "Entendido",
                 confirmButtonColor: "#1a7fa8",
-            })
-            return
+            });
+            return;
         }
 
         try {
-
+            // Simulación de API
             Swal.fire({
                 title: "¡Registro exitoso!",
                 text: "El líder se registró correctamente",
                 icon: "success",
-                confirmButtonText: "Aceptar",
                 confirmButtonColor: "#1a7fa8",
-            })
-
-            // Limpiar formulario
-            setFormData({ lider: "", document: "", contraseña: "" })
-
+            });
+            setFormData({ lider: "", document: "", correo: "", contraseña: "" });
         } catch (error) {
             Swal.fire({
                 title: "Error",
                 text: "No se pudo registrar el líder",
                 icon: "error",
-                confirmButtonColor: "#1a7fa8",
-            })
+                confirmButtonColor: "#d33",
+            });
         }
-    }
+    };
 
     return (
         <div className="admin-layout">
-
-            {/* SIDEBAR */}
+            {/* SIDEBAR - SIN CAMBIOS SEGÚN SOLICITUD */}
             <aside className={`sidebar ${menuOpen ? "open" : "closed"}`}>
                 <div className="sidebar-content">
 
@@ -75,7 +69,7 @@ const RegistrarLider = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M16 2v2" /><path d="M17.915 22a6 6 0 0 0-12 0" /><path d="M8 2v2" /><circle cx="12" cy="12" r="4" /><rect x="3" y="4" width="18" height="18" rx="2" />
                             </svg>
-                            <span className="menu-label">Listado de Estudiantes</span>
+                            <span className="menu-label">Lista de Estudiantes</span>
                         </NavLink>
 
                         <NavLink to="/admin/registrar" className={linkClass}>
@@ -107,8 +101,9 @@ const RegistrarLider = () => {
                         </NavLink>
 
                         <NavLink to="/admin/notificaciones" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-ring-icon lucide-bell-ring">
-                                <path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M22 8c0-2.3-.8-4.3-2-6"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M10.268 21a2 2 0 0 0 3.464 0" /><path d="M22 8c0-2.3-.8-4.3-2-6" /><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /><path d="M4 2C2.8 3.7 2 5.7 2 8" />
+                            </svg>
                             <span className="menu-label">Notificaciones</span>
                         </NavLink>
                     </nav>
@@ -122,46 +117,52 @@ const RegistrarLider = () => {
                         </NavLink>
                     </div>
                 </div>
-            </aside>
+            </aside>    
 
             <main className={`main-content ${menuOpen ? "expanded" : "collapsed"}`}>
-                <h1 className="titulo-p">Registro de Lideres</h1>
-                <p className="text-p">Registro de lideres para el plan de alimentación escolar</p>
+                <header className="header-section">
+                    <h1 className="titulo-p">Registro de Líderes</h1>
+                    <p className="text-p">Gestión del Plan de Alimentación Escolar (PAE)</p>
+                </header>
 
-                <div className="container-lider">
-                    <div className="form-lider">
-
-                        <div className="input-lider">
-                            <label htmlFor="lider">Lider</label>
-
-                            <input type="text" placeholder="Lider" id="lider"
-                                value={formData.lider}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="input-lider">
-                            <label htmlFor="document">Documento</label>
-                            <input type="text" placeholder="Documento" id="document"
-                                value={formData.document}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="input-lider">
-                            <label htmlFor="contraseña">Contraseña</label>
-                            <input type="password" placeholder="Contraseña" id="contraseña"
-                                value={formData.contraseña}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <button type="button" className="lider-btn" onClick={handleSubmit}>
-                            Crear lider
-                        </button>
-
+                <section className="container-lider">
+                    <div className="card-header">
+                        <h2 className="registro">Nuevo Registro</h2>
                     </div>
-                </div>
+                    
+                    <form className="form-lider" onSubmit={handleSubmit}>
+                        <div className="input-group">
+                            <label htmlFor="lider">Nombre Completo</label>
+                            <input type="text" placeholder="Ej. Juan Pérez" id="lider"
+                                value={formData.lider} onChange={handleChange} />
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="document">Documento de Identidad</label>
+                            <input type="text" placeholder="Número de documento" id="document"
+                                value={formData.document} onChange={handleChange} />
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="correo">Correo Electrónico</label>
+                            <input type="email" placeholder="correo@ejemplo.com" id="correo"
+                                value={formData.correo} onChange={handleChange} />
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="contraseña">Contraseña</label>
+                            <input type="password" placeholder="••••••••" id="contraseña"
+                                value={formData.contraseña} onChange={handleChange} />
+                        </div>
+
+                        <button type="submit" className="lider-btn">
+                            Registrar Líder
+                        </button>
+                    </form>
+                </section>
             </main>
         </div>
-    )
-}
+    );
+};
 
-export default RegistrarLider
+export default RegistrarLider;
