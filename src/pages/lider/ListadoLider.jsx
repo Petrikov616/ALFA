@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import "../css/ListadoAdmin.css";
 import { NavLink } from "react-router-dom";
 import { Pencil, Trash2, Check, X } from "lucide-react";
+import { SignOutButton } from "@clerk/clerk-react";
 
 // Constantes estáticas fuera para no sobrecargar el render
 const GRUPOS = ["Todos", "6-1", "6-2", "7-1", "7-2", "8-1", "8-2", "9-1", "9-2", "10-1", "10-2", "11-1", "11-2"];
@@ -82,13 +83,6 @@ const ListadoAdmin = () => {
                             <span className="menu-label">Lista de Estudiantes</span>
                         </NavLink>
 
-                        <NavLink to="/lider/registrar" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M17 12v4a1 1 0 0 1-1 1h-4" /><path d="M17 3h2a2 2 0 0 1 2 2v2" /><path d="M17 8V7" /><path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M7 17h.01" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" /><rect x="7" y="7" width="5" height="5" rx="1" />
-                            </svg>
-                            <span className="menu-label">Registrar Estudiante</span>
-                        </NavLink>
-
                         <NavLink to="/lider/leerqr" className={linkClass}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M17 3h2a2 2 0 0 1 2 2v2" /><path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" /><path d="M7 12h10" />
@@ -101,13 +95,6 @@ const ListadoAdmin = () => {
                                 <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M12 17h.01" /><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
                             </svg>
                             <span className="menu-label">Reportes</span>
-                        </NavLink>
-
-                        <NavLink to="/lider/lider" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M2 21a8 8 0 0 1 13.292-6" /><circle cx="10" cy="8" r="5" /><path d="M19 16v6" /><path d="M22 19h-6" />
-                            </svg>
-                            <span className="menu-label">Registrar líder</span>
                         </NavLink>
 
                         <NavLink to="/lider/notificaciones" className={linkClass}>
@@ -123,7 +110,9 @@ const ListadoAdmin = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="m16 17 5-5-5-5" /><path d="M21 12H9" /><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                             </svg>
+                            <SignOutButton redirectUrl="/login">
                             <span className="menu-label">Cerrar sesión</span>
+                            </SignOutButton>
                         </NavLink>
                     </div>
                 </div>
