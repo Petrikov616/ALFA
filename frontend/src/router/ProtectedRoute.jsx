@@ -43,7 +43,7 @@ export const ProtectedRoute = ({ children, allowedRole }) => {
         return <Navigate to="/login" />;
     }
 
-    // ✅ Esto es lo nuevo: si el rol no coincide, redirige a su área correcta
+    //si el rol no coincide, redirige a su área correcta
     if (allowedRole && role !== allowedRole) {
         return <Navigate to={role === "admin" ? "/admin/listado" : "/lider/inicio"} />;
     }
