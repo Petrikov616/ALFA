@@ -1,5 +1,5 @@
 import express from 'express';
-const router = express.Router();    
+const router = express.Router();
 import pool from '../db.js';
 
 // LISTAR
@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
         return res.status(200).json(result.rows);
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: "Error al obtener los estudiantes"});
+        return res.status(500).json({ error: "Error al obtener los estudiantes" });
     }
 });
 
@@ -30,9 +30,9 @@ router.get("/:documento", async (req, res) => { // Corregido el parámetro
         }
 
         return res.status(200).json(result.rows[0]);
-    } catch(err) {
+    } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: "Error al obtener el estudiante"});
+        return res.status(500).json({ error: "Error al obtener el estudiante" });
     }
 });
 
@@ -42,7 +42,7 @@ router.post("/", async (req, res) => {
     const { documento, nombre1, nombre2, apellido1, apellido2, id_grupo } = req.body;
 
     if (!documento || !nombre1 || !apellido1) {
-        return res.status(400).json({ error: "El documento, primer nombre y primer apellido son obligatorios"});
+        return res.status(400).json({ error: "El documento, primer nombre y primer apellido son obligatorios" });
     }
 
     try {
@@ -63,9 +63,9 @@ router.post("/", async (req, res) => {
     } catch (err) {
         console.error("Error al crear el estudiante:", err);
         if (err.code === '23505') {
-            return res.status(400).json({ error: "Ya existe un estudiante activo registrado con este documento"}); 
+            return res.status(400).json({ error: "Ya existe un estudiante activo registrado con este documento" });
         }
-        return res.status(500).json({ error: "Error al crear el estudiante"});
+        return res.status(500).json({ error: "Error al crear el estudiante" });
     }
 });
 
@@ -78,8 +78,8 @@ router.delete('/:id', async (req, res) => {
         const result = await pool.query(query, [id]);
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ 
-                error: `No se encontró el estudiante con ID ${id} o ya ha sido eliminado` 
+            return res.status(404).json({
+                error: `No se encontró el estudiante con ID ${id} o ya ha sido eliminado`
             });
         }
 
@@ -92,4 +92,63 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+//PUT Actualizar al estudiante o reactivarlo
+
+router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { documento, nombre1, nombre2, apellido1, apellido2, id_grupo, activo } = req.body;
+
+    try {
+        // 1. Verificar si el estudiante existe primero
+        const checkQuery = 'SELECT * FROM app.estudiantes WHERE id = $1;';
+        const checkResult = await pool.query(checkQuery, [id]);
+
+        if (checkResult.rows.length === 0) {
+            return res.status(404).json({ error: `No se encontró ningún estudiante con el ID ${id}` });
+        }
+
+        const current = checkResult.rows[0];
+
+        // 2. Query corregido asegurando que no haya ningún ":" oculto
+        const query = `
+            UPDATE app.estudiantes 
+            SET 
+                documento = $1, 
+                nombre1 = $2, 
+                nombre2 = $3, 
+                apellido1 = $4, 
+                apellido2 = $5, 
+                grupo_id = $6, 
+                activo = $7,
+                updated_at = NOW()
+            WHERE id = $8
+            RETURNING *;
+        `;
+
+        const values = [
+            documento !== undefined ? documento : current.documento,
+            nombre1 !== undefined ? nombre1 : current.nombre1,
+            nombre2 !== undefined ? nombre2 : current.nombre2,
+            apellido1 !== undefined ? apellido1 : current.apellido1,
+            apellido2 !== undefined ? apellido2 : current.apellido2,
+            id_grupo !== undefined ? id_grupo : current.grupo_id,
+            activo !== undefined ? activo : current.activo,
+            id
+        ];
+
+        const result = await pool.query(query, values);
+
+        return res.status(200).json({
+            message: "Estudiante actualizado correctamente",
+            estudiante: result.rows[0]
+        });
+
+    } catch (err) {
+        console.error("Error al actualizar el estudiante:", err);
+        if (err.code === '23505') {
+            return res.status(400).json({ error: "No se puede activar este documento porque ya lo tiene otro estudiante activo." });
+        }
+        return res.status(500).json({ error: "Error al actualizar el estudiante" });
+    }
+});
 export default router;
