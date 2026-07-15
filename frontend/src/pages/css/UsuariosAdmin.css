@@ -1,0 +1,211 @@
+/* Contenedor principal */
+.usuarios-container {
+    padding: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+    font-family: inherit;
+}
+
+/* Encabezado */
+.usuarios-header {
+    margin-bottom: 25px;
+}
+
+.usuarios-header h2 {
+    font-size: 26px;
+    color: #1e293b;
+    margin: 0 0 6px 0;
+    font-weight: 700;
+}
+
+.usuarios-header p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Alertas de error */
+.error-alert {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fee2e2;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* Tarjeta contenedora de la tabla */
+.tabla-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+/* Tabla base */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.tabla-usuarios {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+}
+
+.tabla-usuarios th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.tabla-usuarios td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.tabla-usuarios tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Celda del líder con avatar circular */
+.user-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar-circle {
+    width: 34px;
+    height: 34px;
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.font-semibold {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* Correo */
+.user-email {
+    color: #64748b;
+}
+
+/* Documento */
+.badge-documento {
+    font-family: monospace;
+    background-color: #f1f5f9;
+    color: #334155;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.no-data {
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* Badges de grupos */
+.grupos-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.badge-grupo {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.badge-sin-grupo {
+    background-color: #fffbeb;
+    color: #b45309;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* Alineaciones auxiliares */
+.text-center {
+    text-align: center;
+}
+
+/* Botones de acción */
+.btn-delete {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-delete:hover:not(:disabled) {
+    background-color: #ef4444;
+    color: #ffffff;
+}
+
+.btn-delete:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Estados de Carga y Vacíos */
+.loading-state, .empty-state {
+    padding: 50px;
+    text-align: center;
+    color: #64748b;
+}
+
+.spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0284c7;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.empty-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+}
+
+.empty-subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+}

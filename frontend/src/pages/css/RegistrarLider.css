@@ -113,3 +113,31 @@
 .lider-btn:active {
     transform: scale(0.98);
 }
+
+/* Contenedor que agrupa la lista de opciones */
+.grupos-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;          /* Espacio uniforme entre un grupo y otro */
+    margin-top: 8px;
+    align-items: flex-start; /* Evita que los elementos se estiren a lo ancho */
+}
+
+/* Estilo para cada fila (Casilla + Texto) */
+.grupo-checkbox {
+    display: flex;
+    align-items: center; /* Centra verticalmente el cuadrito con el texto */
+    gap: 10px;           /* Distancia exacta entre el checkbox y el texto */
+    cursor: pointer;
+    font-size: 14px;
+    color: #4a5568;      /* Color de texto suave */
+    user-select: none;   /* Evita que se seleccione el texto al hacer doble clic rápido */
+}
+
+/* Estilo para ajustar el tamaño del checkbox */
+.grupo-checkbox input[type="checkbox"] {
+    width: 12px;
+    height: 12px;
+    margin: 5px;           /* Remueve márgenes raros que añade el navegador por defecto */
+    cursor: pointer;
+}

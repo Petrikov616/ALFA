@@ -11,6 +11,8 @@ import LeerQRAdmin from '../pages/admin/LeerQRAdmin'
 import ReportesAdmin from '../pages/admin/ReportesAdmin'
 import RegistrarLiderAdmin from '../pages/admin/RegistrarLider'
 import NotificacionAdmin from '../pages/admin/NotificacionAdmin'
+import UsuariosAdmin from '../pages/admin/UsuariosAdmin'
+
 
 import ListadoLider from '../pages/lider/ListadoLider'
 import LeerQRLider from '../pages/lider/LeerQRLider'
@@ -36,6 +38,7 @@ function AppRouter() {
             <Route path="/admin/permisos" element={<ProtectedRoute allowedRole="admin"><ReportesAdmin /></ProtectedRoute>} />
             <Route path="/admin/lider" element={<ProtectedRoute allowedRole="admin"><RegistrarLiderAdmin /></ProtectedRoute>} />
             <Route path="/admin/notificaciones" element={<ProtectedRoute allowedRole="admin"><NotificacionAdmin /></ProtectedRoute>} />
+            <Route path="/admin/usuarios" element={<ProtectedRoute allowedRole="admin"><UsuariosAdmin /></ProtectedRoute>} />
 
             {/* RUTAS DE LIDER */}
             <Route path="/lider/listado" element={<ProtectedRoute allowedRole="lider"><ListadoLider /></ProtectedRoute>} />
