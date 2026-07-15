@@ -133,7 +133,7 @@ router.put('/:id', async (req, res) => {
             apellido2 !== undefined ? apellido2 : current.apellido2,
             id_grupo !== undefined ? id_grupo : current.grupo_id,
             activo !== undefined ? activo : current.activo,
-            id
+            
         ];
 
         const result = await pool.query(query, values);

@@ -1,10 +1,13 @@
+import 'dotenv/config';
+
 import express from "express";
 import cors from "cors";
-import "dotenv/config";
 import pool from "./db.js";
 import gruposRouter from "./routes/grupos.js";
 import clerkWebhookRouter from "./routes/clerkWebhook.js";
 import estudiantesRouter from "./routes/estudiantes.js"
+import reportesRouter from "./routes/reportes.js"
+import lideresRouter from "./routes/lideres.js"
 
 const app = express();
 app.use(cors());
@@ -13,6 +16,8 @@ app.use(express.json());
 
 app.use("/api/grupos", gruposRouter);
 app.use("/api/estudiantes", estudiantesRouter);
+app.use("/api/reportes", reportesRouter);
+app.use("/api/lideres", lideresRouter);
 
 app.get("/health", async (req, res) => {
     try {
