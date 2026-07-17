@@ -179,4 +179,55 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
+
+// ==========================================
+// 3. UPDATE UN LIDER (Sincronizado con Clerk y Base de Datos)
+// ==========================================
+
+router.put("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    const {nombre, contraseña, grupoId, clerkId, clerk_id} = req.body;
+
+    const clerkIdActual = clerkId || clerk_id;
+
+    try {
+        if(clerkIdActual) {
+            const updateData = {};
+            if (nombre) {
+                const nombres = nombre.split(" ");
+                updateData.firstName = nombres[0];
+                updateData.lastName = nombres.slice(1).join(" ") || "";
+            }
+            if (contraseña && contraseña.trim() !== "") {
+                updateData.password = contraseña;
+            }
+
+            if (Object.keys(updateData).length > 0) {
+                await clerkClient.users.updateUser(clerkIdActual, updateData);
+            }
+        }
+
+        await pool.query(
+            "UPDATE app.usuarios SET nombre = $1 WHERE id = $2",
+            [nombre, id]
+        );
+
+        await pool.query("DELETE FROM app.lider_grupo WHERE lider_id = $1", [id]);
+
+        if(grupoId) {
+            await pool.query(
+                "INSERT INTO app.lider_grupo (lider_id, grupo_id) VALUES ($1, $2)",
+                [id, grupoId]
+            );
+        }
+        res.json({ status: "ok", message: "Líder actualizado correctamente" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: "error", detalle: "Error al actualizar el lider" });
+    }
+});
+
+
+
 export default router;
