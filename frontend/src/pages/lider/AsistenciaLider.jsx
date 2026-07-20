@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
-import "../css/ListadoAdmin.css";
+import "../css/AsistenciaAdmin.css";
 import { NavLink } from "react-router-dom";
 import { Pencil, Trash2, Check, X } from "lucide-react";
 import { SignOutButton } from "@clerk/clerk-react";
+
 // Constantes estáticas fuera para no sobrecargar el render
 const GRUPOS = ["Todos", "6-1", "6-2", "7-1", "7-2", "8-1", "8-2", "9-1", "9-2", "10-1", "10-2", "11-1", "11-2"];
 const MESES = [
@@ -75,16 +76,23 @@ const ListadoAdmin = () => {
                                 </div>
             
                                 <nav className="menu">
-                                    <NavLink to="/admin/listado" className={linkClass}>
+                                    <NavLink to="/admin/asistencia" className={linkClass}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M16 2v2" /><path d="M17.915 22a6 6 0 0 0-12 0" /><path d="M8 2v2" /><circle cx="12" cy="12" r="4" /><rect x="3" y="4" width="18" height="18" rx="2" />
                                         </svg>
-                                        <span className="menu-label">Lista de Estudiantes</span>
+                                        <span className="menu-label">Asistencia</span>
+                                    </NavLink>
+
+                                    <NavLink to="/admin/estudiantes" className={linkClass}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round-icon lucide-users-round"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/>
+                                            <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/>
+                                        </svg>
+                                        <span className="menu-label">Estudiantes</span>
                                     </NavLink>
             
                                     <NavLink to="/admin/registrar" className={linkClass}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M17 12v4a1 1 0 0 1-1 1h-4" /><path d="M17 3h2a2 2 0 0 1 2 2v2" /><path d="M17 8V7" /><path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M7 17h.01" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" /><rect x="7" y="7" width="5" height="5" rx="1" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-plus-icon lucide-circle-plus"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/>
+                                            <path d="M12 8v8"/>
                                         </svg>
                                         <span className="menu-label">Registrar Estudiante</span>
                                     </NavLink>

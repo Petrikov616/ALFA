@@ -1,36 +1,40 @@
-import { useState } from "react";
-import "../css/NotificacionAdmin.css";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import "../css/EstudiantesAdmin.css";
 import { SignOutButton } from "@clerk/clerk-react";
 
-function NotificacionAdmin() {
-
+const EstudiantesAdmin = () => {
+    // Definimos el estado para abrir y cerrar el Sidebar
     const [menuOpen, setMenuOpen] = useState(true);
+
+    const [estudiantes, setEstudiantes] = useState([]);
+    const [cargando, setCargando] = useState(true);
+
     const toggleMenu = () => setMenuOpen(!menuOpen);
+    const linkClass = ({ isActive }) => isActive ? "menu-link active" : "menu-link";
 
-    const [filtro, setFiltro] = useState("todos");
 
-    const [notificaciones, setNotificaciones] = useState([
-        { id: 1, estudiante: "Juan Pérez", tipo: "Eliminacion", motivos: "Renuncio al PAE", grupo: "7-1", fecha: "2024-06-01" },
-        { id: 2, motivo: "Sin servicio", tipo: "Dia sin servicio", fecha: "2024-06-01" },
-        { id: 3, estudiante: "Simon Tobon Correa", tipo: "Editacion", motivos: "Cambios en la cedula", grupo: "11-1", fecha: "2024-06-01" },
-        { id: 4, estudiante: "Samuel Zuleta Hincapie", tipo: "Eliminacion", motivos: "Renuncio al PAE", grupo: "6-1", fecha: "2024-06-01" },
-    ]);
+    useEffect(() => {
+        const obtenerEstudiantes = async () => {
+            try {
+                const res = await fetch("http://localhost:4000/api/estudiantes"); // Ajusta a tu puerto del backend
+                if (res.ok) {
+                    const data = await res.json();
+                    setEstudiantes(data);
+                }
+            } catch (error) {
+                console.error("Error al traer estudiantes:", error);
+            } finally {
+                setCargando(false);
+            }
+        };
 
-    const filtros = ["Dia sin servicio", "Eliminacion", "Editacion"];
-
-    // ✅ CORRECCIÓN: filtrado aplicado correctamente sobre el array
-    const notificacionesFiltradas = notificaciones.filter(
-        (r) => filtro === "todos" || r.tipo === filtro
-    );
-
-    const linkClass = ({ isActive }) =>
-        isActive ? "menu-link active" : "menu-link";
+        obtenerEstudiantes();
+    }, []);
 
     return (
         <div className="admin-layout">
-
-            {/* SIDEBAR */}
+            {/* SIDEBAR REINTEGRADO */}
             <aside className={`sidebar ${menuOpen ? "open" : "closed"}`}>
                 <div className="sidebar-content">
 
@@ -113,53 +117,46 @@ function NotificacionAdmin() {
             </aside>
 
             {/* CONTENIDO PRINCIPAL */}
+
             <main className="main-content">
+                <div className="contenedor-estudiantes">
+                    <div className="header-seccion">
+                        <h2>Listado de Estudiantes</h2>
+                        <p>Gestión y visualización de alumnos registrados en el PAE.</p>
+                    </div>
 
-                <h1 className="titulo-p">Gestión de notificaciones</h1>
-                <p className="text-p">
-                    Se muestran notificaciones sobre estudiantes (como ausencias, eliminación o edición), con opción de filtrarlas por grupo y tipo.
-                </p>
-
-                <div className="noti-card">
-                    <div className="lista-header">
-                        <h2 className="card-titulo" style={{ marginBottom: 0 }}>Notificaciones</h2>
-                        <div className="filtros">
-                            <select
-                                className="form-noti filtro-grupo"
-                                value={filtro}
-                                onChange={(e) => setFiltro(e.target.value)}>
-                                <option value="todos">Todos</option>
-                                {filtros.map((n) => <option key={n} value={n}>{n}</option>)}
-                            </select>
+                    {cargando ? (
+                        <p className="loading-text">Cargando estudiantes...</p>
+                    ) : estudiantes.length === 0 ? (
+                        <p className="no-data">No hay estudiantes registrados todavía.</p>
+                    ) : (
+                        <div className="tabla-responsive">
+                            <table className="tabla-estudiantes">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Completo</th>
+                                        <th>Documento</th>
+                                        <th>Servicio</th>
+                                        <th>Grupo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {estudiantes.map((e) => (
+                                        <tr key={e.id}>
+                                            <td><strong>{e.nombre}</strong></td>
+                                            <td>{e.documento}</td>
+                                            <td><span className="tag-servicio">{e.servicio}</span></td>
+                                            <td>{e.grupo}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-
-                    <div className="lista-noti">
-                        {notificacionesFiltradas.length === 0 ? (
-                            <p className="text-p">No hay notificaciones para mostrar.</p>
-                        ) : (
-                            notificacionesFiltradas.map((r) => (
-                                <div key={r.id} className="noti-item">
-                                    <div className="noti-info">
-                                        <span className="noti-nombre">{r.estudiante} {r.motivo}</span>
-                                        <span className="noti-meta">
-                                            {r.tipo} · {r.motivos} · {r.fecha} · {r.grupo}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
+                    )}
                 </div>
-
-                <div className="lista-footer">
-                    {/* ✅ CORRECCIÓN: texto del contador corregido */}
-                    <span>{notificacionesFiltradas.length} notificación{notificacionesFiltradas.length === 1 ? "" : "es"} hoy</span>
-                </div>
-
             </main>
         </div>
     );
-}
+};
 
-export default NotificacionAdmin;
+export default EstudiantesAdmin;

@@ -47,9 +47,23 @@ const RegistrarLider = () => {
         });
     };
 
+    const esContraseñaDebil = (password) => {
+        if (password.length < 8) return true;
+
+        const tieneMayuscula = /[A-Z]/.test(password);
+        const tieneMinuscula = /[a-z]/.test(password);
+        const tieneNumero = /[0-9]/.test(password);
+
+        if (!tieneMayuscula || !tieneMinuscula || !tieneNumero) {
+            return true;
+        }
+        return false;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault(); // Evita recarga de página
 
+        // 1. Validación de campos obligatorios
         if (!formData.lider || !formData.document || !formData.correo || !formData.contraseña) {
             Swal.fire({
                 title: "Campos incompletos",
@@ -60,6 +74,20 @@ const RegistrarLider = () => {
             return;
         }
 
+        
+
+        // Validación extra: longitud razonable de una cédula (ej: entre 6 y 10 dígitos)
+        if (formData.document.length < 8 || formData.document.length > 10) {
+            Swal.fire({
+                title: "Documento inválido",
+                text: "La cédula debe tener entre 8 y 10 dígitos",
+                icon: "warning",
+                confirmButtonColor: "#1a7fa8",
+            });
+            return;
+        }
+
+        // 2. Validación de grupos asignados
         if (formData.grupo_ids.length === 0) {
             Swal.fire({
                 title: "Selecciona un grupo",
@@ -70,7 +98,24 @@ const RegistrarLider = () => {
             return;
         }
 
-        // Mostramos un modal de carga mientras se comunica con Backend -> Clerk -> Base de datos
+        // 3. Validación de longitud de contraseña (Corregido a formData.contraseña)
+        if (esContraseñaDebil(formData.contraseña)) {
+            Swal.fire({
+                title: "Contraseña muy debil",
+                html: "Por seguridad, la contraseña debe cumplir con lo siguiente:<br><br>" +
+                    "<ul style='text-align: left; margin-left: 20px;'>" +
+                    "<li>Tener al menos 8 caracteres</li>" +
+                    "<li>Incluir al menos una letra mayúscula</li>" +
+                    "<li>Incluir al menos una letra minúscula</li>" +
+                    "<li>Incluir al menos un número</li>" +
+                    "</ul>",
+                    icon: "error",
+                    confirmButtonColor: "#1e3a8a",
+            });
+            return;
+        }
+
+        // 4. Si todo está correcto, iniciamos el proceso de registro y mostramos la carga
         Swal.fire({
             title: "Registrando líder...",
             text: "Por favor, espera un momento",
@@ -126,7 +171,7 @@ const RegistrarLider = () => {
 
     return (
         <div className="admin-layout">
-            {/* SIDEBAR - SIN CAMBIOS SEGÚN SOLICITUD */}
+            {/* SIDEBAR - SIN CAMBIOS */}
             <aside className={`sidebar ${menuOpen ? "open" : "closed"}`}>
                             <div className="sidebar-content">
             
@@ -138,16 +183,23 @@ const RegistrarLider = () => {
                                 </div>
             
                                 <nav className="menu">
-                                    <NavLink to="/admin/listado" className={linkClass}>
+                                    <NavLink to="/admin/asistencia" className={linkClass}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M16 2v2" /><path d="M17.915 22a6 6 0 0 0-12 0" /><path d="M8 2v2" /><circle cx="12" cy="12" r="4" /><rect x="3" y="4" width="18" height="18" rx="2" />
                                         </svg>
-                                        <span className="menu-label">Lista de Estudiantes</span>
+                                        <span className="menu-label">Asistencia</span>
+                                    </NavLink>
+
+                                    <NavLink to="/admin/estudiantes" className={linkClass}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round-icon lucide-users-round"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/>
+                                            <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/>
+                                        </svg>
+                                        <span className="menu-label">Estudiantes</span>
                                     </NavLink>
             
                                     <NavLink to="/admin/registrar" className={linkClass}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M17 12v4a1 1 0 0 1-1 1h-4" /><path d="M17 3h2a2 2 0 0 1 2 2v2" /><path d="M17 8V7" /><path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M7 17h.01" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" /><rect x="7" y="7" width="5" height="5" rx="1" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-plus-icon lucide-circle-plus"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/>
+                                            <path d="M12 8v8"/>
                                         </svg>
                                         <span className="menu-label">Registrar Estudiante</span>
                                     </NavLink>
@@ -221,8 +273,19 @@ const RegistrarLider = () => {
 
                         <div className="input-group">
                             <label htmlFor="document">Documento de Identidad</label>
-                            <input type="text" placeholder="Número de documento" id="document"
-                                value={formData.document} onChange={handleChange} />
+                            <input 
+                                type="text" 
+                                placeholder="Número de documento" 
+                                id="document"
+                                value={formData.document} 
+                                onChange={(e) => {
+                                    const valor = e.target.value;
+                                    // Bloqueo en tiempo real: Solo permite actualizar si son números
+                                    if (/^[0-9]*$/.test(valor)) {
+                                        handleChange(e);
+                                    }
+                                }} 
+                            />
                         </div>
 
                         <div className="input-group">

@@ -1,0 +1,123 @@
+/* ==========================================================================
+Distribución Principal (Layout)
+   ========================================================================== */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f7f9; /* Fondo gris claro ultra limpio */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* Container de la sección */
+.contenedor-estudiantes {
+
+    margin: 0 auto;
+}
+
+/* Cabecera de la sección */
+.header-seccion {
+    margin-bottom: 30px;
+}
+
+.header-seccion h2 {
+    font-size: 32px;
+    color: #1a5276; /* Azul oscuro elegante */
+    margin: 0 0 8px 0;
+    font-weight: 800;
+}
+
+.header-seccion p {
+    margin: 5px 0;
+    font-size: 1.0rem;
+    color: #5A7184;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+Componente de Tabla Estilizada
+   ========================================================================== */
+.tabla-responsive {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.397); /* Sombra suave idéntica a tus tarjetas */
+    overflow: hidden; /* Mantiene las esquinas redondeadas */
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.tabla-estudiantes {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+/* Encabezados */
+.tabla-estudiantes th {
+    background-color: #1a7fa8; /* El azul característico de tu app */
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 16px 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Celdas del cuerpo */
+.tabla-estudiantes td {
+    padding: 16px 20px;
+    font-size: 15px;
+    color: #333333;
+    border-bottom: 1px solid #edf2f5;
+    vertical-align: middle;
+}
+
+/* Filas e interactividad */
+.tabla-estudiantes tbody tr:last-child td {
+    border-bottom: none; /* Quita la línea final para que no rompa el redondeado */
+}
+
+.tabla-estudiantes tbody tr:hover {
+    background-color: #f8fbfe; /* Efecto hover sutil al pasar el mouse */
+    transition: background-color 0.2s ease;
+}
+
+.tabla-estudiantes td strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Badges y Estados Especiales
+   ========================================================================== */
+.tag-servicio {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: rgba(26, 127, 168, 0.1); /* Fondo azul translúcido */
+    color: #1a7fa8;
+    border-radius: 20px;
+    text-transform: capitalize;
+}
+
+/* Mensajes de carga o vacíos */
+.loading-text, .no-data {
+    text-align: center;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    color: #666;
+    font-size: 16px;
+}
+
+.no-data {
+    border: 2px dashed #cbd5e1;
+    background-color: #f8fafc;
+}

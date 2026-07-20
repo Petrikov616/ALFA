@@ -116,6 +116,41 @@
     margin-top: 4px;
     transition: background 0.15s;
 }
+/* Modifica tu clase actual dejándola así */
+.reporte-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    transition: border-color 0.15s;
+    position: relative; /* Nos asegura un contexto de posición limpio */
+}
+
+.btn-eliminar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background: #A32D2D;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s;
+    
+    /* Esto es clave: obliga al botón a pegarse por completo al borde derecho */
+    margin-left: auto; 
+    align-self: flex-end; 
+}
+.reporte-acciones{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
 
 .btn-guardar:hover {
     background: #1578b0;
@@ -229,6 +264,50 @@
     color: #94a3b8;
     font-size: 13px;
     padding: 40px 0;
+}
+
+/* Contenedor principal de la carga */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.9); /* Un fondo blanco sutilmente transparente, o usa el color oscuro de tu panel si prefieres */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Para asegurarse de que tape el menú y todo lo demás mientras carga */
+}
+
+/* El texto de carga */
+.loading-screen p {
+    margin-top: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a7fa8; /* El color azul que usas en tus botones principales */
+    font-family: sans-serif;
+}
+
+/* El Spinner animado (círculo giratorio) */
+.spinner {
+    width: 45px;
+    height: 45px;
+    border: 4px solid #e0e0e0;
+    border-top: 4px solid #1a7fa8; /* El color de énfasis */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Animación que hace girar el círculo */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* RESPONSIVE */

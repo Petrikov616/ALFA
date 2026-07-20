@@ -1,31 +1,61 @@
-import { useState } from "react";
-import "../css/NotificacionAdmin.css";
+import { useState, useMemo } from "react";
+import "../css/AsistenciaAdmin.css";
 import { NavLink } from "react-router-dom";
+import { Pencil, Trash2, Check, X } from "lucide-react";
 import { SignOutButton } from "@clerk/clerk-react";
-import { 
-    LayoutDashboard, 
-    Users, 
-    UserPlus, 
-    QrCode, 
-    ShieldCheck, 
-    UserRoundPlus, 
-    BellRing, 
-    LogOut,
-    Fingerprint,
-    Search
-} from "lucide-react";
+// Constantes estáticas fuera para no sobrecargar el render
+const GRUPOS = ["Todos", "6-1", "6-2", "7-1", "7-2", "8-1", "8-2", "9-1", "9-2", "10-1", "10-2", "11-1", "11-2"];
+const MESES = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
 
-const LeerQRAdmin = () => {
+const ListadoAdmin = () => {
+    // ESTADOS
     const [menuOpen, setMenuOpen] = useState(true);
-    const [documentoManual, setDocumentoManual] = useState("");
-    const [escaneando, setEscaneando] = useState(false);
+    const [busqueda, setBusqueda] = useState("");
+    const [grupo, setGrupo] = useState("Todos");
+    const [mes, setMes] = useState("Enero");
+    const [estudiantes, setEstudiantes] = useState([
+        { id: 1, estudiante: "Simon Tobon Correa", grupo: "6-1" },
+        { id: 2, estudiante: "Samuel Zuleta Hincapie", grupo: "11-2" },
+        { id: 3, estudiante: "Victor Manuel Perez", grupo: "8-2" },
+        { id: 4, estudiante: "Salo NO SE XD", grupo: "11-1" },
+    ]);
 
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
-    };
+    // LÓGICA DE NEGOCIO (Memorizada)
+    const toggleMenu = () => setMenuOpen(!menuOpen);
 
-    const handleConfirmarManual = () => {
-        alert(`Buscando asistencia para documento: ${documentoManual}`);
+    const diasDelMes = useMemo(() => {
+        const mesesIndex = { 
+            Enero: 0, Febrero: 1, Marzo: 2, Abril: 3, Mayo: 4, Junio: 5, 
+            Julio: 6, Agosto: 7, Septiembre: 8, Octubre: 9, Noviembre: 10, Diciembre: 11 
+        };
+        const year = new Date().getFullYear();
+        const mesIndex = mesesIndex[mes];
+        const diasEnMes = new Date(year, mesIndex + 1, 0).getDate();
+        
+        return Array.from({ length: diasEnMes }, (_, i) => {
+            const fecha = new Date(year, mesIndex, i + 1);
+            return {
+                numero: i + 1,
+                nombre: fecha.toLocaleDateString("es-ES", { weekday: "short" })
+            };
+        });
+    }, [mes]);
+
+    const estudiantesFiltrados = useMemo(() => {
+        return estudiantes.filter((e) => {
+            const coincideNombre = e.estudiante.toLowerCase().includes(busqueda.toLowerCase());
+            const coincideGrupo = grupo === "Todos" || e.grupo === grupo;
+            return coincideNombre && coincideGrupo;
+        });
+    }, [busqueda, grupo, estudiantes]);
+
+    const eliminarEstudiante = (id) => {
+        if(window.confirm("¿Deseas eliminar este estudiante?")) {
+            setEstudiantes(estudiantes.filter(e => e.id !== id));
+        }
     };
 
     const linkClass = ({ isActive }) => isActive ? "menu-link active" : "menu-link";
@@ -33,7 +63,7 @@ const LeerQRAdmin = () => {
     return (
         <div className="admin-layout">
 
-            {/* SIDEBAR */}
+            {/* SIDEBAR REINTEGRADO */}
             <aside className={`sidebar ${menuOpen ? "open" : "closed"}`}>
                             <div className="sidebar-content">
             
@@ -114,63 +144,62 @@ const LeerQRAdmin = () => {
                                 </div>
                             </div>
                         </aside>
+
+            {/* CONTENIDO PRINCIPAL */}
             <main className={`main-content ${menuOpen ? "expanded" : "collapsed"}`}>
-                <h1 className="titulo-p">Registrar Asistencia</h1>
-                <p className="text-p">
-                    Escanee la huella o ingrese el documento para validar la entrada al servicio.
-                </p>
+                <h1 className="titulo-p">Bienvenido, Administrador</h1>
 
-                <div className="main-blue-container">
-                    
-                    {/* TARJETA 1: ESCANEO */}
-                    <div className="white-card">
-                        <h2 className="card-title-b">Escanear Huella</h2>
-                        <p className="card-desc-b">Coloque la huella del estudiante en el lector para registrar asistencia.</p>
-                        
-                        <div className="fingerprint-wrapper">
-                            <div 
-                                className={`fingerprint-box ${escaneando ? 'scanning' : ''}`}
-                                onClick={() => setEscaneando(!escaneando)}
-                            >
-                                <Fingerprint size={80} color={escaneando ? "#5dade2" : "#ccc"} />
-                                {escaneando && <div className="scan-line"></div>}
-                            </div>
-                            <p className="status-text">{escaneando ? "Escaneando..." : "Esperando huella"}</p>
+                {/* FILTROS */}
+                <div className="filters">
+                    <input
+                        type="text"
+                        placeholder="Buscar estudiante..."
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                    />
+                    <select value={grupo} onChange={(e) => setGrupo(e.target.value)}>
+                        {GRUPOS.map(g => <option key={g} value={g}>{g}</option>)}
+                    </select>
+                    <select value={mes} onChange={(e) => setMes(e.target.value)}>
+                        {MESES.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                </div>
+
+                {/* TABLA */}
+                <div className="tabla-container" style={{ overflowX: 'auto' }}>
+                    <div className="tabla">
+                        {/* HEADER */}
+                        <div className="tabla-header">
+                            <span className="col-estudiante">Estudiante</span>
+                            <span className="col-grupo">Grupo</span>
+
+                            {diasDelMes.map((d) => (
+                                <span key={d.numero} style={{ minWidth: '60px', textAlign: 'center' }}>
+                                    {String(d.numero).padStart(2, "0")} <br/> 
+                                    <small style={{ fontSize: '0.7em', textTransform: 'uppercase' }}>{d.nombre}</small>
+                                </span>
+                            ))}
                         </div>
-                    </div>
 
-                    {/* TARJETA 2: REGISTRO MANUAL */}
-                    <div className="white-card">
-                        <h2 className="card-title-b">Registro Manual</h2>
-                        <p className="card-desc-b">Use esta opción si el lector de huellas presenta inconvenientes.</p>
-                        
-                        <div className="inner-dark-box">
-                            <p className="form-label">Identificación</p>
-                            <div className="manual-input-wrapper">
-                                <Search size={20} className="input-icon" />
-                                <input 
-                                    type="text" 
-                                    placeholder="Número de documento" 
-                                    className="input-white" 
-                                    value={documentoManual}
-                                    onChange={(e) => setDocumentoManual(e.target.value)}
-                                />
+                        {/* FILAS */}
+                        {estudiantesFiltrados.map((est) => (
+                            <div key={est.id} className="fila">
+                                <span className="col-estudiante">{est.estudiante}</span>
+                                <span className="col-grupo">{est.grupo}</span>
+
+                                {diasDelMes.map((d) => (
+                                    <span key={d.numero} style={{ minWidth: '60px', textAlign: 'center' }}>
+                                        {/* Aquí pondrás la lógica real de asistencia luego */}
+                                        <Check size={20} color="#10b981" /> 
+                                    </span>
+                                ))}
                             </div>
-
-                            <button 
-                                className={`btn-confirmar ${!documentoManual ? 'disabled' : ''}`}
-                                disabled={!documentoManual}
-                                onClick={handleConfirmarManual}
-                            >
-                                Confirmar Asistencia
-                            </button>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </main>
         </div>
+    );
+};
 
-
-    )
-}
-export default LeerQRAdmin
+export default ListadoAdmin;
