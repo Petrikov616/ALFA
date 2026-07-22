@@ -5,10 +5,10 @@ import pool from "../db.js";
 // 1. LISTAR REPORTES
 router.get("/", async (req, res) => {
     try {
-        // CORRECCIÓN: Cambiado e.id_grupo por e.grupo_id
         const query = `
             SELECT 
                 r.id, 
+                r.estudiante_id,
                 r.servicio, 
                 r.alimento, 
                 r.nivel, 
@@ -29,6 +29,7 @@ router.get("/", async (req, res) => {
 
         const reportesFormateados = result.rows.map(row => ({
             id: row.id,
+            estudiante_id: row.estudiante_id,
             servicio: row.servicio,
             alimento: row.alimento,
             nivel: row.nivel,
@@ -83,10 +84,10 @@ router.post("/", async (req, res) => {
         const insertResult = await pool.query(insertQuery, values);
         const nuevoReporteId = insertResult.rows[0].id;
 
-        // CORRECCIÓN: Cambiado e.id_grupo por e.grupo_id aquí también
         const selectQuery = `
             SELECT 
                 r.id, 
+                r.estudiante_id,
                 r.servicio, 
                 r.alimento, 
                 r.nivel, 
@@ -109,6 +110,7 @@ router.post("/", async (req, res) => {
 
         const reporteFormateado = {
             id: row.id,
+            estudiante_id: row.estudiante_id,
             servicio: row.servicio,
             alimento: row.alimento,
             nivel: row.nivel,
