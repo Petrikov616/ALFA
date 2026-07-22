@@ -33,63 +33,98 @@ const ReportesAdmin = () => {
     const niveles = ["Poco", "Medio", "Mucho"];
 
     useEffect(() => {
-        obtenerReportes();
-        obtenerEstudiantes();
-        obtenerGrupos();
+        const cargarDatosIniciales = async () => {
+            setLoading(true);
+            await Promise.all([obtenerReportes(), obtenerEstudiantes(), obtenerGrupos()]);
+            setLoading(false);
+        };
+        cargarDatosIniciales();
     }, []);
 
     const obtenerReportes = async () => {
         try {
             const res = await fetch("http://localhost:4000/api/reportes");
-
-            // Si la respuesta no es correcta (ej. error 500), forzamos un array vacío
             if (!res.ok) {
                 console.error("El servidor devolvió un error:", res.status);
                 setReportes([]);
-                setLoading(false);
                 return;
             }
-
             const data = await res.json();
-
-            // Validamos que 'data' sea un array antes de actualizar el estado
-            if (Array.isArray(data)) {
-                setReportes(data);
-            } else {
-                console.error("Los datos recibidos no son un array:", data);
-                setReportes([]);
-            }
-
-            setLoading(false);
+            setReportes(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error("Error al obtener reportes:", error);
-            setReportes([]); // Evita que se rompa en el catch
-            setLoading(false);
+            setReportes([]);
         }
     };
 
     const obtenerGrupos = async () => {
         try {
             const res = await fetch("http://localhost:4000/api/grupos");
+            if (!res.ok) return setGrupos([]);
             const data = await res.json();
-            setGrupos(data);
+            setGrupos(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error("Error al obtener grupos:", error);
+            setGrupos([]);
         }
     };
 
     const obtenerEstudiantes = async () => {
         try {
             const res = await fetch("http://localhost:4000/api/estudiantes");
+            if (!res.ok) return setEstudiantes([]);
             const data = await res.json();
-            setEstudiantes(data);
+            const listaEstudiantes = Array.isArray(data) ? data : (data.estudiantes || []);
+            setEstudiantes(listaEstudiantes);
         } catch (error) {
             console.error("Error al obtener estudiantes:", error);
+            setEstudiantes([]);
         }
     };
 
     const formatearNombre = (est) => {
-        return `${est.nombre1 || ""} ${est.nombre2 || ""} ${est.apellido1 || ""} ${est.apellido2 || ""}`.replace(/\s+/g, " ").trim();
+        if (!est) return "";
+        if (typeof est === "string") return est.trim();
+        if (typeof est === "object") {
+            if (est.nombre1 || est.apellido1) {
+                return [est.nombre1, est.nombre2, est.apellido1, est.apellido2]
+                    .filter(Boolean)
+                    .map((s) => String(s).trim())
+                    .join(" ")
+                    .trim();
+            }
+            if (est.nombres && est.apellidos) {
+                return `${String(est.nombres).trim()} ${String(est.apellidos).trim()}`;
+            }
+            const nombreBase = est.nombre || est.nombres || est.nombre_completo || "";
+            return String(nombreBase).trim();
+        }
+        return String(est).trim();
+    };
+
+    // Función auxiliar para resolver el nombre de un reporte de forma segura
+    const obtenerNombreEstudianteDeReporte = (r) => {
+        if (!r) return "Estudiante sin nombre";
+        
+        // 1. Intentar por objeto estudiante anidado
+        if (r.estudiante) {
+            const nombreFormateado = formatearNombre(r.estudiante);
+            if (nombreFormateado) return nombreFormateado;
+        }
+
+        // 2. Intentar buscar en lista de estudiantes por ID
+        const idABuscar = r.estudiante_id || r.id_estudiante || r.estudianteId;
+        if (idABuscar) {
+            const estudianteEncontrado = estudiantes.find(
+                (e) => String(e.id) === String(idABuscar)
+            );
+            if (estudianteEncontrado) return formatearNombre(estudianteEncontrado);
+        }
+
+        // 3. Otros fallbacks
+        if (typeof r.estudiante === 'string' && r.estudiante.trim() !== '') return r.estudiante;
+        
+        return r.nombre_estudiante || r.estudiante_nombre || "Estudiante sin nombre";
     };
 
     const handleGuardar = async (e) => {
@@ -107,7 +142,8 @@ const ReportesAdmin = () => {
 
         const estudianteEncontrado = estudiantes.find((est) => {
             const nombreCompleto = formatearNombre(est).toLowerCase();
-            return nombreCompleto === estudiante.trim().toLowerCase();
+            const nombreInput = estudiante.trim().toLowerCase();
+            return nombreCompleto.localeCompare(nombreInput, undefined, { sensitivity: 'base' }) === 0;
         });
 
         if (!estudianteEncontrado) {
@@ -119,6 +155,36 @@ const ReportesAdmin = () => {
             });
             return;
         }
+
+        const grupoRealEstudiante = estudianteEncontrado.grupo || estudianteEncontrado.nombre_grupo;
+
+        if(grupoRealEstudiante && grupoRealEstudiante.trim().toLowerCase() !== grupo.trim().toLocaleLowerCase()) {
+            Swal.fire({
+                title: "Grupo incorrecto",
+                text: "El estudiante escrito no pertenece al grupo seleccionado.",
+                icon: "warning",
+                confirmButtonColor: "#1a7fa8",
+            })
+            return;
+        }
+
+        const servicioRealEstudiante = estudianteEncontrado.servicio;
+
+        if(servicioRealEstudiante) {
+            const servReal = servicioRealEstudiante.trim().toLowerCase();
+            const servSeleccionado = servicio.trim().toLowerCase();
+
+            if(servReal !== "ambos" && servReal !== servSeleccionado) {
+                Swal.fire({
+                    title: "Servicio no autorizado",
+                    text: `El estudiante solo cuenta con el servicio de: ${servicioRealEstudiante}. No se puede registrar un reporte con este servicio.`,
+                    icon: "warning",
+                    confirmButtonColor: "#1a7fa8",
+                });
+                return;
+            }
+        }
+
 
         const nuevoReporte = {
             estudiante_id: parseInt(estudianteEncontrado.id),
@@ -138,7 +204,6 @@ const ReportesAdmin = () => {
             });
 
             if (res.ok) {
-                // 1. Obtenemos el reporte formateado que devuelve el backend
                 const reporteCreado = await res.json();
 
                 Swal.fire({
@@ -148,20 +213,24 @@ const ReportesAdmin = () => {
                     confirmButtonColor: "#1a7fa8",
                 });
 
-                // 2. Insertamos el nuevo reporte al inicio de la lista local sin recargar la API
-                setReportes((reportesPrevios) => [reporteCreado, ...reportesPrevios]);
+                // Inyectamos el objeto estudiante para evitar fallos visuales inmediatos antes del re-fetch
+                const reporteConEstudiante = {
+                    ...reporteCreado,
+                    estudiante: estudianteEncontrado
+                };
 
-                // 3. Limpiamos el formulario
+                setReportes((reportesPrevios) => [reporteConEstudiante, ...reportesPrevios]);
+
+                // Limpiar formulario
                 setEstudiante("");
                 setGrupo("");
                 setServicio("");
                 setAlimento("");
                 setNivel("");
                 setObservacion("");
-
             } else {
                 const errorData = await res.json();
-                console.log("Error detallado del backend:", errorData);
+                console.error("Error detallado del backend:", errorData);
                 throw new Error("Error en el servidor");
             }
         } catch (error) {
@@ -192,7 +261,9 @@ const ReportesAdmin = () => {
                 });
                 if (res.ok) {
                     Swal.fire("Eliminado", "El reporte ha sido borrado.", "success");
-                    obtenerReportes();
+                    setReportes((prev) => prev.filter((r) => r.id !== id));
+                } else {
+                    throw new Error("No se pudo eliminar en el servidor");
                 }
             } catch (error) {
                 console.error(error);
@@ -202,21 +273,15 @@ const ReportesAdmin = () => {
     };
 
     const reportesFiltrados = reportes.filter((r) => {
-        const nombreEstudiante = typeof r.estudiante === "object" && r.estudiante !== null
-            ? formatearNombre(r.estudiante).toLowerCase()
-            : (r.estudiante || "").toLowerCase();
-
+        if (!r) return false;
+        
+        // Usamos la misma función ultra-segura para filtrar por búsqueda sin que rompa
+        const nombreEstudiante = obtenerNombreEstudianteDeReporte(r).toLowerCase();
         const coincideBusqueda = nombreEstudiante.includes(busqueda.toLowerCase());
         const coincideNivel = filtroNivel === "Todos" || r.nivel === filtroNivel;
+        
         return coincideBusqueda && coincideNivel;
     });
-
-    const badgeClass = (n) => {
-        if (n === "Poco") return "badge badge-poco";
-        if (n === "Medio") return "badge badge-medio";
-        if (n === "Mucho") return "badge badge-mucho";
-        return "badge";
-    };
 
     const linkClass = ({ isActive }) => isActive ? "menu-link active" : "menu-link";
 
@@ -224,7 +289,7 @@ const ReportesAdmin = () => {
         return (
             <div className="loading-screen">
                 <div className="spinner"></div>
-                <p>Cargando reportes...</p>
+                <p>Cargando datos del sistema...</p>
             </div>
         );
     }
@@ -234,7 +299,6 @@ const ReportesAdmin = () => {
             {/* SIDEBAR */}
             <aside className={`sidebar ${menuOpen ? "open" : "closed"}`}>
                 <div className="sidebar-content">
-
                     <div onClick={toggleMenu} className="logo">
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <rect width="5" height="5" x="3" y="3" rx="1" /><rect width="5" height="5" x="16" y="3" rx="1" /><rect width="5" height="5" x="3" y="16" rx="1" /><path d="M21 16h-3a2 2 0 0 0-2 2v3" /><path d="M21 21v.01" /><path d="M12 7v3a2 2 0 0 1-2 2H7" /><path d="M3 12h.01" /><path d="M12 3h.01" /><path d="M12 16v.01" /><path d="M16 12h1" /><path d="M21 12v.01" /><path d="M12 21v-1" />
@@ -251,15 +315,16 @@ const ReportesAdmin = () => {
                         </NavLink>
 
                         <NavLink to="/admin/estudiantes" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round-icon lucide-users-round"><path d="M18 21a8 8 0 0 0-16 0" /><circle cx="10" cy="8" r="5" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M18 21a8 8 0 0 0-16 0" /><circle cx="10" cy="8" r="5" />
                                 <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
                             </svg>
                             <span className="menu-label">Estudiantes</span>
                         </NavLink>
 
                         <NavLink to="/admin/registrar" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-plus-icon lucide-circle-plus"><circle cx="12" cy="12" r="10" /><path d="M8 12h8" />
-                                <path d="M12 8v8" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" /><path d="M8 12h8" /><path d="M12 8v8" />
                             </svg>
                             <span className="menu-label">Registrar Estudiante</span>
                         </NavLink>
@@ -293,8 +358,8 @@ const ReportesAdmin = () => {
                         </NavLink>
 
                         <NavLink to="/admin/usuarios" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-cog-icon lucide-user-round-cog"><path d="m14.305 19.53.923-.382" /><path d="m15.228 16.852-.923-.383" />
-                                <path d="m16.852 15.228-.383-.923" /><path d="m16.852 20.772-.383.924" /><path d="m19.148 15.228.383-.923" /><path d="m19.53 21.696-.382-.924" /><path d="M2 21a8 8 0 0 1 10.434-7.62" /><path d="m20.772 16.852.924-.383" /><path d="m20.772 19.148.924.383" /><circle cx="10" cy="8" r="5" /><circle cx="18" cy="18" r="3" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="m14.305 19.53.923-.382" /><path d="m15.228 16.852-.923-.383" /><path d="m16.852 15.228-.383-.923" /><path d="m16.852 20.772-.383.924" /><path d="m19.148 15.228.383-.923" /><path d="m19.53 21.696-.382-.924" /><path d="M2 21a8 8 0 0 1 10.434-7.62" /><path d="m20.772 16.852.924-.383" /><path d="m20.772 19.148.924.383" /><circle cx="10" cy="8" r="5" /><circle cx="18" cy="18" r="3" />
                             </svg>
                             <span className="menu-label">Usuarios</span>
                         </NavLink>
@@ -334,9 +399,10 @@ const ReportesAdmin = () => {
                                 value={estudiante}
                                 onChange={(e) => setEstudiante(e.target.value)}
                                 list="estudiantes-list"
+                                autoComplete="off"
                             />
                             <datalist id="estudiantes-list">
-                                {estudiantes.map((est) => (
+                                {estudiantes.slice(0, 10).map((est) => (
                                     <option key={est.id} value={formatearNombre(est)} />
                                 ))}
                             </datalist>
@@ -440,24 +506,17 @@ const ReportesAdmin = () => {
                                 <div className="lista-vacia">No hay reportes registrados aún.</div>
                             ) : (
                                 reportesFiltrados.map((r) => {
-                                    // Aquí calculas correctamente el nombre del estudiante
-                                    const nombreMostrar = typeof r.estudiante === "object" && r.estudiante !== null
-                                        ? formatearNombre(r.estudiante)
-                                        : (r.estudiante || "Estudiante no asignado");
+                                    const nombreFinal = obtenerNombreEstudianteDeReporte(r);
 
                                     return (
                                         <div className="reporte-item" key={r.id}>
-
-                                            {/* Lado izquierdo: Información del reporte */}
                                             <div className="reporte-info">
-                                                <span className="reporte-nombre">{nombreMostrar}</span>
-                                                <span className="reporte-meta">Grupo {r.grupo} • {r.servicio} • {r.hora}</span>
+                                                <span className="reporte-nombre">{nombreFinal}</span>
+                                                <span className="reporte-meta">{r.grupo ? (r.grupo.toLowerCase().startsWith("grupo") ? r.grupo : `Grupo ${r.grupo}`) : "Sin grupo"} • {r.servicio} • {r.hora || "Reciente"}</span>
                                             </div>
 
-                                            {/* El badge y el botón como hermanos directos */}
                                             <div className="reporte-acciones">
-                                                <span className={`badge badge-${r.nivel.toLowerCase()}`}>{r.nivel}</span>
-
+                                                <span className={`badge badge-${r.nivel ? r.nivel.toLowerCase() : "default"}`}>{r.nivel}</span>
                                                 <button
                                                     className="btn-eliminar"
                                                     onClick={() => handleEliminar(r.id)}

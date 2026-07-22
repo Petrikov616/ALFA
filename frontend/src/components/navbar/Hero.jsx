@@ -1,6 +1,6 @@
 import "./Hero.css";
 import escudo from "../../assets/escudo.png";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Hero() {
     return (
@@ -19,9 +19,9 @@ function Hero() {
                         de la tecnología de códigos QR, ahorrando tiempo a profesores y estudiantes.
                     </p>
 
-                    <Link to="/login" className="acceder-btn">
+                    <NavLink to="/login" className="acceder-btn">
                         Acceder a la Plataforma
-                    </Link>
+                    </NavLink>
                 </div>
 
                 <div className="hero-image">

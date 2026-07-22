@@ -93,7 +93,7 @@ Componente de Tabla Estilizada
 }
 
 /* ==========================================================================
-   Badges y Estados Especiales
+Badges y Estados Especiales
    ========================================================================== */
 .tag-servicio {
     display: inline-block;
@@ -120,4 +120,52 @@ Componente de Tabla Estilizada
 .no-data {
     border: 2px dashed #cbd5e1;
     background-color: #f8fafc;
+}
+
+
+.acciones-celda {
+    display: flex;
+    gap: 8px;                  
+    justify-content: center;   
+    align-items: center;
+    width: max-content;       
+    margin: 0 auto;           
+}
+
+.tabla-estudiantes th:last-child {
+    width: 150px;              
+    text-align: center;
+}
+
+
+
+.btn-accion {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-accion:active {
+    transform: scale(0.95);
+}
+
+.btn-editar {
+    background-color: #1a7fa8; /* Azul corporativo de AgilCheck */
+    color: white;
+}
+
+.btn-editar:hover {
+    background-color: #146383;
+}
+
+.btn-eliminar {
+    background-color: #d9534f; /* Rojo sutil para destrucción */
+    color: white;
+}
+
+.btn-eliminar:hover {
+    background-color: #c9302c;
 }

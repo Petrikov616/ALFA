@@ -7,7 +7,7 @@ function Redirect() {
     if (!isLoaded) return null;
 
     const role = user?.publicMetadata?.role || "lider";
-    return <Navigate to={role === "admin" ? "/admin/listado" : "/lider/listado"} />;
+    return <Navigate to={role === "admin" ? "/admin/asistencia" : "/lider/asistencia"} />;
 }
 
 export default Redirect;

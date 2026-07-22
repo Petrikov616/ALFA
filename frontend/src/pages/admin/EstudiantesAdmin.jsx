@@ -1,23 +1,25 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom"; 
 import "../css/EstudiantesAdmin.css";
 import { SignOutButton } from "@clerk/clerk-react";
+import ModalEditarEstudiante from "../../components/ModalEditarEstudiante";
 
 const EstudiantesAdmin = () => {
-    // Definimos el estado para abrir y cerrar el Sidebar
     const [menuOpen, setMenuOpen] = useState(true);
-
     const [estudiantes, setEstudiantes] = useState([]);
     const [cargando, setCargando] = useState(true);
+    
+    // ESTADO CLAVE: Almacena el objeto del estudiante que se está editando. Si es null, el modal se cierra.
+    const [estudianteEditando, setEstudianteEditando] = useState(null);
 
     const toggleMenu = () => setMenuOpen(!menuOpen);
     const linkClass = ({ isActive }) => isActive ? "menu-link active" : "menu-link";
 
-
+    // Obtener los estudiantes del Backend al montar el componente
     useEffect(() => {
         const obtenerEstudiantes = async () => {
             try {
-                const res = await fetch("http://localhost:4000/api/estudiantes"); // Ajusta a tu puerto del backend
+                const res = await fetch("http://localhost:4000/api/estudiantes");
                 if (res.ok) {
                     const data = await res.json();
                     setEstudiantes(data);
@@ -32,12 +34,67 @@ const EstudiantesAdmin = () => {
         obtenerEstudiantes();
     }, []);
 
+    // 2. Manejador para abrir el Modal pasando el objeto completo del estudiante
+    const handleEdit = (estudiante) => {
+        setEstudianteEditando(estudiante);
+    };
+
+    // 3. Manejador para procesar la actualización asíncrona (Formulario del Modal)
+    const handleSaveEdit = async (id, datosActualizados) => {
+        try {
+            const res = await fetch(`http://localhost:4000/api/estudiantes/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(datosActualizados),
+            });
+
+            if (res.ok) {
+                // Actualización optimista: mapeamos el estado actual para reflejar los cambios en tiempo real
+                setEstudiantes((prevEstudiantes) =>
+                    prevEstudiantes.map((e) => (e.id === id ? { ...e, ...datosActualizados } : e))
+                );
+                setEstudianteEditando(null); // Cerramos el modal
+                alert("Estudiante actualizado correctamente.");
+            } else {
+                alert("No se pudieron guardar los cambios. Inténtalo de nuevo.");
+            }
+        } catch (error) {
+            console.error("Error al actualizar estudiante:", error);
+            alert("Ocurrió un error en el servidor al intentar guardar los cambios.");
+        }
+    };
+
+    // 4. Manejador para la Eliminación Asíncrona
+    const handleDelete = async (id, nombre) => {
+        const confirmar = window.confirm(`¿Estás seguro de que deseas eliminar al estudiante ${nombre}?`);
+        if (!confirmar) return;
+
+        try {
+            const res = await fetch(`http://localhost:4000/api/estudiantes/${id}`, {
+                method: "DELETE",
+            });
+
+            if (res.ok) {
+                setEstudiantes((prevEstudiantes) =>
+                    prevEstudiantes.filter((estudiante) => estudiante.id !== id)
+                );
+                alert("Estudiante eliminado correctamente.");
+            } else {
+                alert("No se pudo eliminar al estudiante. Inténtalo de nuevo.");
+            }
+        } catch (error) {
+            console.error("Error al eliminar estudiante:", error);
+            alert("Ocurrió un error en el servidor al intentar eliminar.");
+        }
+    };
+
     return (
         <div className="admin-layout">
             {/* SIDEBAR REINTEGRADO */}
             <aside className={`sidebar ${menuOpen ? "open" : "closed"}`}>
                 <div className="sidebar-content">
-
                     <div onClick={toggleMenu} className="logo">
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <rect width="5" height="5" x="3" y="3" rx="1" /><rect width="5" height="5" x="16" y="3" rx="1" /><rect width="5" height="5" x="3" y="16" rx="1" /><path d="M21 16h-3a2 2 0 0 0-2 2v3" /><path d="M21 21v.01" /><path d="M12 7v3a2 2 0 0 1-2 2H7" /><path d="M3 12h.01" /><path d="M12 3h.01" /><path d="M12 16v.01" /><path d="M16 12h1" /><path d="M21 12v.01" /><path d="M12 21v-1" />
@@ -54,14 +111,14 @@ const EstudiantesAdmin = () => {
                         </NavLink>
 
                         <NavLink to="/admin/estudiantes" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round-icon lucide-users-round"><path d="M18 21a8 8 0 0 0-16 0" /><circle cx="10" cy="8" r="5" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 21a8 8 0 0 0-16 0" /><circle cx="10" cy="8" r="5" />
                                 <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
                             </svg>
                             <span className="menu-label">Estudiantes</span>
                         </NavLink>
 
                         <NavLink to="/admin/registrar" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-plus-icon lucide-circle-plus"><circle cx="12" cy="12" r="10" /><path d="M8 12h8" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 12h8" />
                                 <path d="M12 8v8" />
                             </svg>
                             <span className="menu-label">Registrar Estudiante</span>
@@ -96,7 +153,7 @@ const EstudiantesAdmin = () => {
                         </NavLink>
 
                         <NavLink to="/admin/usuarios" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-cog-icon lucide-user-round-cog"><path d="m14.305 19.53.923-.382" /><path d="m15.228 16.852-.923-.383" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m14.305 19.53.923-.382" /><path d="m15.228 16.852-.923-.383" />
                                 <path d="m16.852 15.228-.383-.923" /><path d="m16.852 20.772-.383.924" /><path d="m19.148 15.228.383-.923" /><path d="m19.53 21.696-.382-.924" /><path d="M2 21a8 8 0 0 1 10.434-7.62" /><path d="m20.772 16.852.924-.383" /><path d="m20.772 19.148.924.383" /><circle cx="10" cy="8" r="5" /><circle cx="18" cy="18" r="3" />
                             </svg>
                             <span className="menu-label">Usuarios</span>
@@ -117,7 +174,6 @@ const EstudiantesAdmin = () => {
             </aside>
 
             {/* CONTENIDO PRINCIPAL */}
-
             <main className="main-content">
                 <div className="contenedor-estudiantes">
                     <div className="header-seccion">
@@ -138,6 +194,7 @@ const EstudiantesAdmin = () => {
                                         <th>Documento</th>
                                         <th>Servicio</th>
                                         <th>Grupo</th>
+                                        <th style={{ textAlign: "center" }}>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -147,6 +204,17 @@ const EstudiantesAdmin = () => {
                                             <td>{e.documento}</td>
                                             <td><span className="tag-servicio">{e.servicio}</span></td>
                                             <td>{e.grupo}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <div className="acciones-celda">
+                                                    {/* Pasamos 'e' (el objeto completo) para rellenar los campos del Modal */}
+                                                    <button onClick={() => handleEdit(e)} className="btn-accion btn-editar">
+                                                        Editar
+                                                    </button>
+                                                    <button onClick={() => handleDelete(e.id, e.nombre)} className="btn-accion btn-eliminar">
+                                                        Eliminar
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -155,6 +223,15 @@ const EstudiantesAdmin = () => {
                     )}
                 </div>
             </main>
+
+            {/* 5. Renderizado Condicional del Modal de Edición */}
+            {estudianteEditando && (
+                <ModalEditarEstudiante
+                    estudiante={estudianteEditando}
+                    onClose={() => setEstudianteEditando(null)}
+                    onSave={handleSaveEdit}
+                />
+            )}
         </div>
     );
 };

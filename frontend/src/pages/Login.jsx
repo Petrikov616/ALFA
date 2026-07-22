@@ -88,7 +88,7 @@ function Login() {
 
     if (isSignedIn) {
         const role = user?.publicMetadata?.role || "lider";
-        return <Navigate to={role === "admin" ? "/admin/listado" : "/lider/listado"} />;
+        return <Navigate to={role === "admin" ? "/admin/asistencia" : "/lider/asistencia"} />;
     }
 
     return (
