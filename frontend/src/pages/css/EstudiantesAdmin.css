@@ -50,6 +50,9 @@ Componente de Tabla Estilizada
     overflow: hidden; /* Mantiene las esquinas redondeadas */
     border: 1px solid rgba(0, 0, 0, 0.03);
 }
+.swal2-container {
+    z-index: 99999 !important;
+}
 
 .tabla-estudiantes {
     width: 100%;
@@ -95,6 +98,92 @@ Componente de Tabla Estilizada
 /* ==========================================================================
 Badges y Estados Especiales
    ========================================================================== */
+/* BARRA DE FILTROS Y BÚSQUEDA */
+.filtros-contenedor {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.input-busqueda {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    outline: none;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease;
+}
+
+.input-busqueda:focus {
+    border-color: #2b82a8;
+}
+
+.select-grupo {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    outline: none;
+    background-color: #ffffff;
+    cursor: pointer;
+    color: #374151;
+}
+
+/* BOTONES DE ACCIÓN ORIGINALES (AZUL Y ROJO) */
+.columna-acciones {
+    text-align: center;
+}
+
+.celda-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-editar {
+    background-color: #2b82a8;
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-editar:hover {
+    background-color: #1f6482;
+}
+
+.btn-eliminar {
+    background-color: #e55353;
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-eliminar:hover {
+    background-color: #c93b3b;
+}
+
+/* MENSAJE CUANDO NO HAY RESULTADOS */
+.sin-resultados {
+    text-align: center;
+    padding: 24px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
 .tag-servicio {
     display: inline-block;
     padding: 6px 12px;
@@ -150,22 +239,4 @@ Badges y Estados Especiales
 
 .btn-accion:active {
     transform: scale(0.95);
-}
-
-.btn-editar {
-    background-color: #1a7fa8; /* Azul corporativo de AgilCheck */
-    color: white;
-}
-
-.btn-editar:hover {
-    background-color: #146383;
-}
-
-.btn-eliminar {
-    background-color: #d9534f; /* Rojo sutil para destrucción */
-    color: white;
-}
-
-.btn-eliminar:hover {
-    background-color: #c9302c;
 }

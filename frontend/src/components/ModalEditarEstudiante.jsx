@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-// Cambiamos "ModalEditarEstudiante.css" por el nombre real del archivo creado
-// Subir a src/, entrar a pages y luego a css
 import "../pages/css/ModalEditar.css";
 
 const ModalEditarEstudiante = ({ estudiante, onClose, onSave }) => {
-    // Estado local para controlar los inputs del formulario
+    // Estado local para los campos del formulario
     const [formData, setFormData] = useState({
         nombre: "",
         documento: "",
@@ -12,7 +10,11 @@ const ModalEditarEstudiante = ({ estudiante, onClose, onSave }) => {
         grupo: ""
     });
 
-    // Sincroniza los datos del estudiante seleccionado cuando se abre el modal
+    // Estados para almacenar los grupos cargados de la base de datos
+    const [gruposBD, setGruposBD] = useState([]);
+    const [cargandoGrupos, setCargandoGrupos] = useState(true);
+
+    // 1. Sincroniza los datos del estudiante seleccionado
     useEffect(() => {
         if (estudiante) {
             setFormData({
@@ -24,6 +26,25 @@ const ModalEditarEstudiante = ({ estudiante, onClose, onSave }) => {
         }
     }, [estudiante]);
 
+    // 2. Consulta la API para obtener los grupos de la BD
+    useEffect(() => {
+        const obtenerGrupos = async () => {
+            try {
+                const res = await fetch("http://localhost:4000/api/grupos");
+                if (res.ok) {
+                    const data = await res.json();
+                    setGruposBD(Array.isArray(data) ? data : []);
+                }
+            } catch (error) {
+                console.error("Error al cargar grupos:", error);
+            } finally {
+                setCargandoGrupos(false);
+            }
+        };
+
+        obtenerGrupos();
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -31,7 +52,6 @@ const ModalEditarEstudiante = ({ estudiante, onClose, onSave }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Enviamos los datos editados al componente padre (EstudiantesAdmin)
         onSave(estudiante.id, formData);
     };
 
@@ -81,15 +101,35 @@ const ModalEditarEstudiante = ({ estudiante, onClose, onSave }) => {
                         </select>
                     </div>
 
+                    {/* SELECT CORREGIDO PARA EXTRAER EL TEXTO DEL OBJETO */}
                     <div className="form-group">
                         <label>GRUPO ASIGNADO</label>
-                        <input
-                            type="text"
+                        <select
                             name="grupo"
                             value={formData.grupo}
                             onChange={handleChange}
                             required
-                        />
+                            disabled={cargandoGrupos}
+                        >
+                            <option value="">
+                                {cargandoGrupos ? "Cargando grupos..." : "Seleccione un grupo"}
+                            </option>
+                            {gruposBD.map((grupo, index) => {
+                                // Extrae el nombre según la propiedad que tenga el objeto
+                                const nombreVisible = typeof grupo === "object" 
+                                    ? (grupo.nombre_grupo || grupo.nombre || "") 
+                                    : grupo;
+                                const valorId = typeof grupo === "object" 
+                                    ? (grupo.id || index) 
+                                    : index;
+
+                                return (
+                                    <option key={valorId} value={nombreVisible}>
+                                        {nombreVisible}
+                                    </option>
+                                );
+                            })}
+                        </select>
                     </div>
 
                     <div className="modal-footer">

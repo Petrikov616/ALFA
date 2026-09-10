@@ -1,98 +1,193 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom"; 
+import { NavLink } from "react-router-dom";
 import "../css/EstudiantesAdmin.css";
 import { SignOutButton } from "@clerk/clerk-react";
 import ModalEditarEstudiante from "../../components/ModalEditarEstudiante";
+import Swal from "sweetalert2";
 
 const EstudiantesAdmin = () => {
     const [menuOpen, setMenuOpen] = useState(true);
     const [estudiantes, setEstudiantes] = useState([]);
+    const [busqueda, setBusqueda] = useState("");
+    const [grupoSeleccionado, setGrupoSeleccionado] = useState('Todos');
     const [cargando, setCargando] = useState(true);
-    
-    // ESTADO CLAVE: Almacena el objeto del estudiante que se está editando. Si es null, el modal se cierra.
     const [estudianteEditando, setEstudianteEditando] = useState(null);
+
+    const gruposDisponibles = ['Todos', ...new Set(estudiantes.map(e => e.grupo).filter(Boolean))];
+
+    // Filtrar la lista en tiempo real por nombre, documento o grupo
+    const estudiantesFiltrados = estudiantes.filter(estudiante => {
+        const coincideNombre = (estudiante.nombre || "").toLowerCase().includes(busqueda.toLowerCase()) ||
+            (estudiante.documento || "").toString().includes(busqueda);
+        const coincideGrupo = grupoSeleccionado === 'Todos' || estudiante.grupo === grupoSeleccionado;
+
+        return coincideNombre && coincideGrupo;
+    });
 
     const toggleMenu = () => setMenuOpen(!menuOpen);
     const linkClass = ({ isActive }) => isActive ? "menu-link active" : "menu-link";
 
-    // Obtener los estudiantes del Backend al montar el componente
-    useEffect(() => {
-        const obtenerEstudiantes = async () => {
-            try {
-                const res = await fetch("http://localhost:4000/api/estudiantes");
-                if (res.ok) {
-                    const data = await res.json();
-                    setEstudiantes(data);
-                }
-            } catch (error) {
-                console.error("Error al traer estudiantes:", error);
-            } finally {
-                setCargando(false);
+    // Consultar estudiantes desde la API
+    const obtenerEstudiantes = async () => {
+        try {
+            const res = await fetch("http://localhost:4000/api/estudiantes");
+            if (res.ok) {
+                const data = await res.json();
+                setEstudiantes(data);
             }
-        };
+        } catch (error) {
+            console.error("Error al traer estudiantes:", error);
+        } finally {
+            setCargando(false);
+        }
+    };
 
+    useEffect(() => {
         obtenerEstudiantes();
     }, []);
 
-    // 2. Manejador para abrir el Modal pasando el objeto completo del estudiante
+    // Abrir Modal de Edición
     const handleEdit = (estudiante) => {
         setEstudianteEditando(estudiante);
     };
 
-    // 3. Manejador para procesar la actualización asíncrona (Formulario del Modal)
+    // Guardar cambios
     const handleSaveEdit = async (id, datosActualizados) => {
+        const swalOptions = {
+            willOpen: () => {
+                const container = document.querySelector('.swal2-container');
+                if (container) container.style.zIndex = '99999';
+            }
+        };
+
+        const regexCedula = /^\d{8,10}$/;
+        if (!regexCedula.test(datosActualizados.documento)) {
+            Swal.fire({
+                ...swalOptions,
+                icon: 'error',
+                title: 'Documento inválido',
+                text: 'La cédula debe tener entre 8 y 10 dígitos.',
+                confirmButtonColor: '#3085d6'
+            });
+            return;
+        }
+
+        if (
+            !datosActualizados.nombre ||
+            !datosActualizados.servicio ||
+            datosActualizados.servicio.trim() === "" ||
+            datosActualizados.servicio === "Ninguno" ||
+            !datosActualizados.grupo ||
+            datosActualizados.grupo.trim() === "" ||
+            datosActualizados.grupo === "Seleccione un grupo"
+        ) {
+            Swal.fire({
+                ...swalOptions,
+                icon: 'error',
+                title: 'Campos obligatorios',
+                text: 'Debe ingresar un nombre, seleccionar un servicio válido y asignar un grupo.',
+                confirmButtonColor: '#3085d6'
+            });
+            return;
+        }
+
         try {
             const res = await fetch(`http://localhost:4000/api/estudiantes/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(datosActualizados),
+                body: JSON.stringify({
+                    nombre: datosActualizados.nombre,
+                    documento: datosActualizados.documento,
+                    servicio: datosActualizados.servicio,
+                    grupo: datosActualizados.grupo
+                }),
             });
 
             if (res.ok) {
-                // Actualización optimista: mapeamos el estado actual para reflejar los cambios en tiempo real
-                setEstudiantes((prevEstudiantes) =>
-                    prevEstudiantes.map((e) => (e.id === id ? { ...e, ...datosActualizados } : e))
-                );
-                setEstudianteEditando(null); // Cerramos el modal
-                alert("Estudiante actualizado correctamente.");
+                setEstudianteEditando(null);
+                await obtenerEstudiantes();
+
+                Swal.fire({
+                    ...swalOptions,
+                    icon: 'success',
+                    title: '¡Guardado!',
+                    text: 'Los cambios se han guardado correctamente en la base de datos.',
+                    confirmButtonColor: '#3085d6'
+                });
             } else {
-                alert("No se pudieron guardar los cambios. Inténtalo de nuevo.");
+                const errorData = await res.json().catch(() => ({}));
+                Swal.fire({
+                    ...swalOptions,
+                    icon: 'error',
+                    title: 'Error al guardar',
+                    text: errorData.error || errorData.mensaje || 'No se pudo actualizar la información en la base de datos.',
+                    confirmButtonColor: '#3085d6'
+                });
             }
         } catch (error) {
             console.error("Error al actualizar estudiante:", error);
-            alert("Ocurrió un error en el servidor al intentar guardar los cambios.");
+            Swal.fire({
+                ...swalOptions,
+                icon: 'error',
+                title: 'Error de conexión',
+                text: 'Ocurrió un error al conectar con el servidor.',
+                confirmButtonColor: '#d33'
+            });
         }
     };
 
-    // 4. Manejador para la Eliminación Asíncrona
+    // Eliminar estudiante
     const handleDelete = async (id, nombre) => {
-        const confirmar = window.confirm(`¿Estás seguro de que deseas eliminar al estudiante ${nombre}?`);
-        if (!confirmar) return;
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `Vas a eliminar a ${nombre || 'este estudiante'}. Esta acción no se puede deshacer.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch(`http://localhost:4000/api/estudiantes/${id}`, {
+                        method: "DELETE",
+                    });
 
-        try {
-            const res = await fetch(`http://localhost:4000/api/estudiantes/${id}`, {
-                method: "DELETE",
-            });
+                    if (res.ok) {
+                        setEstudiantes((prevEstudiantes) =>
+                            prevEstudiantes.filter((estudiante) => estudiante.id !== id)
+                        );
 
-            if (res.ok) {
-                setEstudiantes((prevEstudiantes) =>
-                    prevEstudiantes.filter((estudiante) => estudiante.id !== id)
-                );
-                alert("Estudiante eliminado correctamente.");
-            } else {
-                alert("No se pudo eliminar al estudiante. Inténtalo de nuevo.");
+                        Swal.fire(
+                            '¡Eliminado!',
+                            'El estudiante ha sido eliminado correctamente.',
+                            'success'
+                        );
+                    } else {
+                        Swal.fire(
+                            'Error',
+                            'No se pudo eliminar al estudiante. Inténtalo de nuevo.',
+                            'error'
+                        );
+                    }
+                } catch (error) {
+                    console.error("Error al eliminar estudiante:", error);
+                    Swal.fire(
+                        'Error del servidor',
+                        'Ocurrió un error en el servidor al intentar eliminar.',
+                        'error'
+                    );
+                }
             }
-        } catch (error) {
-            console.error("Error al eliminar estudiante:", error);
-            alert("Ocurrió un error en el servidor al intentar eliminar.");
-        }
+        });
     };
 
     return (
         <div className="admin-layout">
-            {/* SIDEBAR REINTEGRADO */}
+            {/* SIDEBAR */}
             <aside className={`sidebar ${menuOpen ? "open" : "closed"}`}>
                 <div className="sidebar-content">
                     <div onClick={toggleMenu} className="logo">
@@ -181,6 +276,29 @@ const EstudiantesAdmin = () => {
                         <p>Gestión y visualización de alumnos registrados en el PAE.</p>
                     </div>
 
+                    {/* BARRA DE FILTROS */}
+                    <div className="filtros-contenedor">
+                        <input
+                            type="text"
+                            className="input-busqueda"
+                            placeholder="Buscar por nombre o documento..."
+                            value={busqueda}
+                            onChange={(e) => setBusqueda(e.target.value)}
+                        />
+
+                        <select
+                            className="select-grupo"
+                            value={grupoSeleccionado}
+                            onChange={(e) => setGrupoSeleccionado(e.target.value)}
+                        >
+                            {gruposDisponibles.map((grupo, index) => (
+                                <option key={index} value={grupo}>
+                                    {grupo === 'Todos' ? 'Todos los grupos' : grupo}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     {cargando ? (
                         <p className="loading-text">Cargando estudiantes...</p>
                     ) : estudiantes.length === 0 ? (
@@ -190,33 +308,38 @@ const EstudiantesAdmin = () => {
                             <table className="tabla-estudiantes">
                                 <thead>
                                     <tr>
-                                        <th>Nombre Completo</th>
-                                        <th>Documento</th>
-                                        <th>Servicio</th>
-                                        <th>Grupo</th>
-                                        <th style={{ textAlign: "center" }}>Acciones</th>
+                                        <th>NOMBRE COMPLETO</th>
+                                        <th>DOCUMENTO</th>
+                                        <th>SERVICIO</th>
+                                        <th>GRUPO</th>
+                                        <th className="columna-acciones">ACCIONES</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {estudiantes.map((e) => (
-                                        <tr key={e.id}>
-                                            <td><strong>{e.nombre}</strong></td>
-                                            <td>{e.documento}</td>
-                                            <td><span className="tag-servicio">{e.servicio}</span></td>
-                                            <td>{e.grupo}</td>
-                                            <td style={{ textAlign: "center" }}>
-                                                <div className="acciones-celda">
-                                                    {/* Pasamos 'e' (el objeto completo) para rellenar los campos del Modal */}
-                                                    <button onClick={() => handleEdit(e)} className="btn-accion btn-editar">
-                                                        Editar
-                                                    </button>
-                                                    <button onClick={() => handleDelete(e.id, e.nombre)} className="btn-accion btn-eliminar">
-                                                        Eliminar
-                                                    </button>
-                                                </div>
+                                    {estudiantesFiltrados.length > 0 ? (
+                                        estudiantesFiltrados.map((e) => (
+                                            <tr key={e.id}>
+                                                <td>{e.nombre}</td>
+                                                <td>{e.documento}</td>
+                                                <td>
+                                                    <span className={`badge ${e.servicio ? e.servicio.toLowerCase() : ''}`}>
+                                                        {e.servicio || 'Ninguno'}
+                                                    </span>
+                                                </td>
+                                                <td>{e.grupo || 'Sin asignar'}</td>
+                                                <td className="celda-acciones">
+                                                    <button className="btn-editar" onClick={() => handleEdit(e)}>Editar</button>
+                                                    <button className="btn-eliminar" onClick={() => handleDelete(e.id, e.nombre)}>Eliminar</button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5" className="sin-resultados">
+                                                No se encontraron estudiantes con esos criterios.
                                             </td>
                                         </tr>
-                                    ))}
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -224,7 +347,7 @@ const EstudiantesAdmin = () => {
                 </div>
             </main>
 
-            {/* 5. Renderizado Condicional del Modal de Edición */}
+            {/* Modal de Edición */}
             {estudianteEditando && (
                 <ModalEditarEstudiante
                     estudiante={estudianteEditando}

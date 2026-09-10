@@ -185,12 +185,12 @@ ACCIONES (BOTONES EDITAR / ELIMINAR APILADOS)
 
 
 .btn-edit {
-    background-color: #fee2e2; 
+    background-color: #048febb2; 
     color: #000000;            
 }
 
 .btn-edit:hover {
-    background-color: #048eeb; 
+    background-color: #048febfd; 
     color: #ffffff;
 }
 
