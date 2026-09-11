@@ -8,6 +8,7 @@ import clerkWebhookRouter from "./routes/clerkWebhook.js";
 import estudiantesRouter from "./routes/estudiantes.js"
 import reportesRouter from "./routes/reportes.js"
 import lideresRouter from "./routes/lideres.js"
+import asistenciaRouter from "./routes/asistencia.js"
 
 const app = express();
 app.use(cors());
@@ -18,6 +19,7 @@ app.use("/api/grupos", gruposRouter);
 app.use("/api/estudiantes", estudiantesRouter);
 app.use("/api/reportes", reportesRouter);
 app.use("/api/lideres", lideresRouter);
+app.use("/api/asistencia", asistenciaRouter);
 
 app.get("/health", async (req, res) => {
     try {
