@@ -20,7 +20,7 @@
     color: #000000;
     margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #f0e3e2;
 }
 
 /* FORM */
@@ -32,7 +32,7 @@
     display: block;
     font-size: 12px;
     font-weight: 500;
-    color: #ffffff;
+    color: #e6e8ec !important;
     margin-bottom: 6px;
 }
 
@@ -41,7 +41,7 @@
     width: 100%;
     padding: 8px 12px;
     font-size: 13px;
-    color: #1a202c;
+    color: #2c211a;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 8px;

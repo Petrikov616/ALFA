@@ -6,156 +6,76 @@
     overflow: hidden;
 }
 
-/* --- CONTENEDOR PRINCIPAL --- */
-.main-content {
-    flex: 1;
-    padding: 40px 60px;
-    overflow-y: auto;
+
+/* Contenedor principal centrado */
+.cedula-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    width: 100%;
 }
 
-.main-blue-container {
-    background-color: #2b4b66;
-    border-radius: 15px;
-    padding: 25px;
+/* Tarjeta / Formulario */
+.cedula-form {
+    background-color: #ffffff;
+    padding: 32px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.479);
+    width: 100%;
+    max-width: 480px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     gap: 20px;
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
 }
 
-/* --- TARJETAS --- */
-.white-card {
-    background-color: white;
-    border-radius: 10px;
-    padding: 30px;
-    flex: 1;
+/* Agrupador de etiqueta e input */
+.form-group {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    gap: 8px;
+    text-align: left;
 }
 
-.card-title-b {
-    color: black;
-    font-size: 1.6rem;
-    font-weight: 800;
-    margin: 0 0 8px 0;
-}
-
-.card-desc-b {
-    color: #333;
-    font-size: 0.95rem;
-    margin-bottom: 25px;
-    line-height: 1.4;
-}
-
-/* --- SECCIÓN HUELLA --- */
-.fingerprint-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    gap: 15px;
-}
-
-.fingerprint-box {
-    width: 140px;
-    height: 140px;
-    border: 3px dashed #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #fafafa;
-    border-radius: 20px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color 0.3s;
-}
-
-.fingerprint-box.scanning {
-    border-color: #5dade2;
-}
-
-.status-text {
+.form-group label {
+    font-size: 15px;
     font-weight: 600;
-    color: #666;
-    margin: 0;
+    color: #334155;
 }
 
-/* Animación de escaneo */
-.scan-line {
-    position: absolute;
+.form-group input {
     width: 100%;
-    height: 2px;
-    background-color: #5dade2;
-    top: 0;
-    box-shadow: 0 0 8px #5dade2;
-    animation: scanning 2s infinite ease-in-out;
-}
-
-@keyframes scanning {
-    0% { top: 0; }
-    50% { top: 100%; }
-    100% { top: 0; }
-}
-
-/* --- REGISTRO MANUAL --- */
-.inner-dark-box {
-    background-color: #2b4b66; 
-    border-radius: 15px;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: auto;
-}
-
-.form-label { color: white; font-weight: bold; margin-bottom: 5px; }
-
-.manual-input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-icon {
-    position: absolute;
-    left: 12px;
-    color: #999;
-}
-
-.manual-input-wrapper .input-white {
-    padding-left: 45px;
-}
-
-.btn-confirmar {
-    background-color: #5b8fbc;
-    color: black;
-    border: none;
-    padding: 12px;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 1.5px solid #056be9;
     border-radius: 8px;
-    font-weight: bold;
+    outline: none;
+    box-sizing: border-box; /* Asegura que el padding no desborde el ancho */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Botón de envío */
+.btn-registrar {
+    background-color: #0284c7;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s ease;
 }
 
-.btn-confirmar:hover:not(:disabled) {
-    background-color: #4a7aa6;
+.btn-registrar:hover {
+    background-color: #0369a1;
 }
 
-.btn-confirmar:disabled {
-    background-color: #4a6b82;
-    color: rgba(255, 255, 255, 0.4);
-    cursor: not-allowed;
-}
-
-/* --- RESPONSIVIDAD --- */
-@media (max-width: 850px) {
-    .main-blue-container {
-        flex-direction: column;
-    }
-    .white-card { width: 100%; }
+.btn-registrar:active {
+    transform: scale(0.99);
 }
