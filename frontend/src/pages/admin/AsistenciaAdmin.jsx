@@ -3,7 +3,7 @@ import "../css/AsistenciaAdmin.css";
 import { NavLink } from "react-router-dom";
 import { Pencil, Trash2, Check, X } from "lucide-react";
 import { SignOutButton } from "@clerk/clerk-react";
-// Constantes estáticas fuera para no sobrecargar el render
+
 const GRUPOS = ["Todos", "6-1", "6-2", "7-1", "7-2", "8-1", "8-2", "9-1", "9-2", "10-1", "10-2", "11-1", "11-2"];
 const MESES = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
