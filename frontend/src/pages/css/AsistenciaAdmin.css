@@ -1,16 +1,18 @@
 /* ==========================================================================
-    TUS ESTILOS DEL MENÚ LATERAL (TOTALMENTE INTACTOS)
+   1. MENÚ LATERAL (INTACTO)
    ========================================================================== */
 .admin-layout {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
     font-family: Arial, sans-serif;
+    background-color: #f1f5f9;
 }
 
 .sidebar {
     background-color: #4da3d9;
     transition: width 0.3s ease;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .sidebar.open {
@@ -94,7 +96,6 @@
 .menu-link.active {
     background-color: #000000;
     border-left: 4px solid white; 
-    transform: border-left 0.3s;
 }
 
 .sidebar.closed .menu a,
@@ -107,211 +108,219 @@
     display: none;
 }
 
-.sidebar.closed .logout .menu-label {
-    display: none;
-}
-
 .menu a:hover,
 .logout a:hover {
     background-color: rgb(31, 28, 28);
 }
 
-
 /* ==========================================================================
-    ZONA MODIFICADA: CONTENIDO, FILTROS Y TABLA
+   2. ÁREA PRINCIPAL Y ENCABEZADO
    ========================================================================== */
-
 .main-content {
     flex: 1;
-    padding: 30px;
-    background-color: #f3f4f6;
+    padding: 32px;
+    overflow-x: hidden;
     transition: all 0.3s ease;
-    overflow-y: auto;
+}
+
+.main-header {
+    margin-bottom: 24px;
 }
 
 .titulo-p {
-    color: #0D4C73;
+    font-size: 1.8rem;
     font-weight: 800;
-    font-size: 24px;
+    color: #1e293b;
+    margin: 0;
+}
+
+/* ==========================================================================
+   3. SECCIÓN DE FILTROS
+   ========================================================================== */
+.filters-container {
+    background: #ffffff;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
 }
 
-/* ── FILTROS ── */
 .filters {
     display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.filters input[type="text"] {
+.input-search {
     flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 14px;
+    min-width: 220px;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.9rem;
     outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.filters input[type="text"]:focus {
-    border-color: #3b8ec2;
+.input-search:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
-.filters select {
-    padding: 8px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background-color: white;
+.select-filter {
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-size: 0.9rem;
+    color: #334155;
+    outline: none;
     cursor: pointer;
+    transition: border-color 0.2s;
 }
 
-/* ── TABLA ── */
-.tabla {
-    background-color: white;
-    border-radius: 10px;
-    overflow: auto; /* Permite el scroll horizontal */
-    border: 1px solid #e5e7eb;
-    max-width: 100%;
+.select-filter:focus {
+    border-color: #3b82f6;
 }
 
-/* HEADER */
-.tabla-header {
+/* ==========================================================================
+4. TABLA DE ASISTENCIA Y CONTENEDOR
+   ========================================================================== */
+.asistencia-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.61), 0 2px 4px -1px rgba(0, 0, 0, 0.945);
+    overflow-x: auto;
+}
+
+.asistencia-table-wrapper {
+    min-width: 1000px;
     display: flex;
-    background-color: #0D4C73;
-    color: white;
-    font-weight: 700;
-    font-size: 14px;
-    padding: 12px 0; /* Padding vertical, el horizontal lo dan las celdas */
-    min-width: max-content;
+    flex-direction: column;
 }
 
-.tabla-header span {
-    width: 80px; 
-    text-align: center;
-    flex-shrink: 0;
-    display: inline-block;
-}
-
-/* COLUMNAS FIJAS EN EL HEADER */
-.tabla-header .col-estudiante {
-    width: 180px;
-    text-align: left;
-    padding-left: 15px;
-    position: sticky;
-    left: 0;
-    background-color: #0D4C73; /* Fondo para que no se transparente */
-    z-index: 20; /* Capa más alta */
-}   
-
-.tabla-header .col-grupo {
-    width: 100px;
-    position: sticky;
-    left: 180px; /* Se pega justo donde termina Estudiante */
-    background-color: #0D4C73;
-    z-index: 20;
-    border-right: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-
-/* FILAS */
-.fila {
+.asistencia-row {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #e5e7eb;
-    min-width: max-content;
-    background-color: white;
+    border-bottom: 1px solid #3533332f;
+    padding: 8px 0;
+    transition: background-color 0.15s ease;
 }
 
-.fila:last-child {
-    border-bottom: none;
-}
-
-.fila:hover {
+.body-row:hover {
     background-color: #f8fafc;
 }
 
-.fila span {
-    width: 80px;
-    text-align: center;
-    flex-shrink: 0;
-    font-size: 14px;
+.header-row {
+    background-color: #1A7FA8;
+    border-bottom: 2px solid #e2e8f0;
+    border-radius: 8px 8px 0 0;
     padding: 12px 0;
+    color: #475569;
+    font-size: 0.85rem;
 }
 
-/* COLUMNAS FIJAS EN LAS FILAS */
-.fila .col-estudiante {
-    width: 180px;
-    text-align: left;
-    padding-left: 15px;
-    position: sticky;
-    left: 0;
-    background-color: white; /* Fondo blanco para tapar las marcas que pasan por detrás */
-    z-index: 10;
+/* Columnas */
+.col-estudiante {
+    width: 220px;
+    min-width: 220px;
+    padding-left: 16px;
+    font-size: 0.9rem;
+    color: #070707;
+}
+
+.col-grupo {
+    width: 80px;
+    min-width: 80px;
+    text-align: center;
+    font-size: 0.85rem;
     font-weight: 600;
+    color: #000000;
 }
 
-.fila .col-grupo {
+.col-acciones {
     width: 100px;
-    position: sticky;
-    left: 180px; /* Misma posición que en el header */
-    background-color: white;
-    z-index: 10;
-    border-right: 2px solid #f3f4f6; /* Separador visual */
+    min-width: 100px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
 }
 
-/* Asegurar que el hover pinte también las columnas fijas */
-.fila:hover, 
-.fila:hover .col-estudiante, 
-.fila:hover .col-grupo {
-    background-color: #f8fafc;
+/* Contenedor de días */
+.col-dias-container {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 2px;
 }
 
-/* BOTONES */
-.fila button {
-    background: none;
+.col-dia {
+    flex: 1;
+    min-width: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.75rem;
+    border-radius: 6px;
+}
+
+.col-dia span {
+    color: #080808;
+}
+
+.col-dia small {
+    font-size: 0.65rem;
+    color: #ffffff;
+    text-transform: capitalize;
+}
+
+.cell-clickable {
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+    padding: 6px 0;
+}
+
+.cell-clickable:hover {
+    background-color: #e2e8f0;
+    transform: scale(1.05);
+}
+
+/* Estados e Íconos */
+.font-bold {
+    font-weight: 700;
+}
+
+.text-success { color: #10b981; }
+.text-danger { color: #ef4444; }
+.text-muted { color: #cbd5e1; }
+
+.icon-edit { color: #3b82f6; }
+.icon-delete { color: #ef4444; }
+
+.btn-icon {
+    background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 16px;
-    padding: 9px;
-    border-radius: 4px;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background-color 0.2s;
 }
 
-.fila button:hover {
-    background-color: #e5e7eb;
+.btn-icon:hover {
+    background-color: #f1f5f9;
 }
 
-/* BOTONES EXTRA */
-.select-btn {
-    background-color: #3b8ec2;
-    border-radius: 6px;
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.select-btn:hover {
-    background-color: #2f79a8;
-}
-
-
-.excel-btn {
-    background-color: #10b981;
-    color: white;
-    margin-left: auto;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.excel-btn:hover {
-    transform: scale(1.05);
+.no-data {
+    text-align: center;
+    padding: 32px;
+    color: #64748b;
+    font-size: 0.95rem;
 }
