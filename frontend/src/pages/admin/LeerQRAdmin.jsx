@@ -8,11 +8,20 @@ const LeerQRAdmin = () => {
     const [menuOpen, setMenuOpen] = useState(true);
     const [cedula, setCedula] = useState("");
 
+    const HORA_INICIO_MINUTOS = 7 * 60;
+    const HORA_FIN_MINUTOS = 10 * 60;
+
+    function horaActualMinutos() {
+    const ahora = new Date();
+    return ahora.getHours() * 60 + ahora.getMinutes();
+}
+
     const toggleMenu = () => setMenuOpen(!menuOpen);
 
     const linkClass = ({ isActive }) => (isActive ? "menu-link active" : "menu-link");
 
     const registrarAsistencia = async (e) => {
+        const ahora = horaActualMinutos();
         if (e) e.preventDefault();
 
         if (!cedula.trim()) {
@@ -24,6 +33,17 @@ const LeerQRAdmin = () => {
             });
             return;
         }
+
+    if(horaActualMinutos < HORA_INICIO_MINUTOS || ahora > HORA_FIN_MINUTOS) {
+        Swal.fire({
+            icon: "warning",
+            title: "Horario de registro",
+            text: "La asistencia solo puede registrarse entre las 7:00 AM y las 10:00 AM.",
+            confirmButtonColor: "#0284c7",
+            
+        });
+        return;
+    }
 
         try {
             const res = await fetch("http://localhost:4000/api/asistencia", {
@@ -87,12 +107,16 @@ const LeerQRAdmin = () => {
                         </NavLink>
 
                         <NavLink to="/admin/estudiantes" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 21a8 8 0 0 0-16 0" /><circle cx="10" cy="8" r="5" /><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 21a8 8 0 0 0-16 0" /><circle cx="10" cy="8" r="5" />
+                                <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
+                            </svg>
                             <span className="menu-label">Estudiantes</span>
                         </NavLink>
 
                         <NavLink to="/admin/registrar" className={linkClass}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 12h8" /><path d="M12 8v8" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 12h8" />
+                                <path d="M12 8v8" />
+                            </svg>
                             <span className="menu-label">Registrar Estudiante</span>
                         </NavLink>
 
@@ -101,6 +125,27 @@ const LeerQRAdmin = () => {
                                 <path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M17 3h2a2 2 0 0 1 2 2v2" /><path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" /><path d="M7 12h10" />
                             </svg>
                             <span className="menu-label">Leer QR</span>
+                        </NavLink>
+
+                        <NavLink to="/admin/permisos" className={linkClass}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M12 17h.01" /><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
+                            </svg>
+                            <span className="menu-label">Reportes</span>
+                        </NavLink>
+
+                        <NavLink to="/admin/lider" className={linkClass}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M2 21a8 8 0 0 1 13.292-6" /><circle cx="10" cy="8" r="5" /><path d="M19 16v6" /><path d="M22 19h-6" />
+                            </svg>
+                            <span className="menu-label">Registrar líder</span>
+                        </NavLink>
+
+                        <NavLink to="/admin/usuarios" className={linkClass}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m14.305 19.53.923-.382" /><path d="m15.228 16.852-.923-.383" />
+                                <path d="m16.852 15.228-.383-.923" /><path d="m16.852 20.772-.383.924" /><path d="m19.148 15.228.383-.923" /><path d="m19.53 21.696-.382-.924" /><path d="M2 21a8 8 0 0 1 10.434-7.62" /><path d="m20.772 16.852.924-.383" /><path d="m20.772 19.148.924.383" /><circle cx="10" cy="8" r="5" /><circle cx="18" cy="18" r="3" />
+                            </svg>
+                            <span className="menu-label">Usuarios</span>
                         </NavLink>
                     </nav>
 
